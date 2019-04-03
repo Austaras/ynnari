@@ -29,7 +29,7 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
                         use: [
                             devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
                             'css-loader',
-                            'sass-loader',
+                            'sass-loader'
                         ]
                     },
                     {
@@ -43,7 +43,7 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
                 extensions: ['.tsx', '.ts', '.js']
             },
             plugins: [
-                new CleanWebpackPlugin(['dist']),
+                new CleanWebpackPlugin(),
                 new HtmlWebpackPlugin({
                     template: 'src/index.html'
                 }),
