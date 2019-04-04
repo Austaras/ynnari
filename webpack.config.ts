@@ -36,8 +36,24 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
                         test: /\.tsx?$/,
                         use: 'ts-loader',
                         exclude: /node_modules/,
+                    },
+                    {
+                        test: /\.(html)$/,
+                        use: {
+                            loader: 'html-loader',
+                            options: {
+                                attrs: ['img:src', 'link:href']
+                            }
+                        }
+                    },
+                    {
+                        test: /\.(png|jpg|gif|svg|webp)$/,
+                        loader: 'file-loader',
+                        options: {
+                            name: '[name].[ext]?[hash]'
+                        }
                     }
-                ]
+                ],
             },
             resolve: {
                 extensions: ['.tsx', '.ts', '.js']
