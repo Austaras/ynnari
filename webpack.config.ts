@@ -16,7 +16,7 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
             ],
             output: {
                 path: __dirname + '/dist',
-                filename: 'bundle.[hash].js'
+                filename: devMode ? '[name].js' : 'bundle.[hash].js'
             },
             devServer: {
                 contentBase: './dist'
@@ -50,7 +50,7 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
                         test: /\.(png|jpg|gif|svg|webp)$/,
                         loader: 'file-loader',
                         options: {
-                            name: '[name].[ext]?[hash]'
+                            name: devMode ? '[name].[ext]' : '[name].[ext]?[hash]'
                         }
                     }
                 ],
