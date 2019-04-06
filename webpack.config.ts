@@ -16,7 +16,7 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
             ],
             output: {
                 path: __dirname + '/dist',
-                filename: devMode ? '[name].js' : 'bundle.[hash].js'
+                filename: devMode ? '[name].js' : '[name].[contenthash].js'
             },
             devServer: {
                 contentBase: './dist'
@@ -39,18 +39,14 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
                     },
                     {
                         test: /\.(html)$/,
-                        use: {
-                            loader: 'html-loader',
-                            options: {
-                                attrs: ['img:src', 'link:href']
-                            }
-                        }
+                        loader: 'html-loader'
                     },
                     {
                         test: /\.(png|jpg|gif|svg|webp)$/,
-                        loader: 'file-loader',
+                        loader: 'url-loader',
                         options: {
-                            name: devMode ? '[name].[ext]' : '[name].[ext]?[hash]'
+                            name: devMode ? '[name].[ext]' : '[name].[ext]?[hash]',
+                            limit: 1024
                         }
                     }
                 ],
@@ -64,7 +60,7 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
                     template: 'src/index.html'
                 }),
                 new MiniCssExtractPlugin({
-                    filename: devMode ? '[name].css' : '[name].[hash].css'
+                    filename: 'styles.[contenthash].css'
                 }),
             ]
         }
