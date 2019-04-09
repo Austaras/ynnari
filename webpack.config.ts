@@ -16,10 +16,28 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
             ],
             output: {
                 path: __dirname + '/dist',
+                publicPath: '/',
                 filename: devMode ? '[name].js' : '[name].[contenthash].js'
             },
+            optimization: {
+                runtimeChunk: 'single',
+                minimize: false,
+                splitChunks: {
+                    cacheGroups: {
+                        vendor: {
+                            test: /[\\/]node_modules[\\/]/,
+                            name: 'vendors',
+                            chunks: 'all'
+                        }
+                    }
+                }
+            },
             devServer: {
-                contentBase: './dist'
+                // it's tricky I know
+                contentBase: __dirname + '/src/index.html',
+                publicPath: '/',
+                watchContentBase: true,
+                hot: true
             },
             mode: devMode ? 'development' : 'production',
             module: {
@@ -34,7 +52,10 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
                     },
                     {
                         test: /\.tsx?$/,
-                        use: 'ts-loader',
+                        loader: 'ts-loader',
+                        options: {
+                            transpileOnly: !devMode
+                        },
                         exclude: /node_modules/,
                     },
                     {
@@ -45,7 +66,7 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
                         test: /\.(png|jpg|gif|svg|webp)$/,
                         loader: 'url-loader',
                         options: {
-                            name: devMode ? '[name].[ext]' : '[name].[ext]?[hash]',
+                            name: devMode ? '[name].[ext]' : 'assets/[name].[ext]?[hash]',
                             limit: 1024
                         }
                     }
@@ -60,8 +81,9 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
                     template: 'src/index.html'
                 }),
                 new MiniCssExtractPlugin({
-                    filename: 'styles.[contenthash].css'
+                    chunkFilename: 'styles.[contenthash].css'
                 }),
+                new webpack.HotModuleReplacementPlugin()
             ]
         }
     }
