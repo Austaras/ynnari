@@ -1,4 +1,4 @@
 export default 123
 let a = 1
-console.log(122, a)
+console.log(1214, a)
 a++

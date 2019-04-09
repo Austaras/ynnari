@@ -14,14 +14,15 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
                 __dirname + '/src/main.ts',
                 __dirname + '/src/styles.scss'
             ],
+            devtool: devMode ?
+                'cheap-module-eval-source-map' : 'nosources-source-map',
             output: {
                 path: __dirname + '/dist',
-                publicPath: '/',
                 filename: devMode ? '[name].js' : '[name].[contenthash].js'
             },
             optimization: {
                 runtimeChunk: 'single',
-                minimize: false,
+                // minimize: false,
                 splitChunks: {
                     cacheGroups: {
                         vendor: {
@@ -33,10 +34,11 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
                 }
             },
             devServer: {
-                // it's tricky I know
-                contentBase: __dirname + '/src/index.html',
-                publicPath: '/',
-                watchContentBase: true,
+                contentBase: __dirname + '/dist',
+                before(_, server) {
+                    // watch index.html changes
+                    (server as any)._watch(__dirname + '/src/index.html')
+                },
                 hot: true
             },
             mode: devMode ? 'development' : 'production',
@@ -80,11 +82,11 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
                 new HtmlWebpackPlugin({
                     template: 'src/index.html'
                 }),
-                new MiniCssExtractPlugin({
+                !devMode && new MiniCssExtractPlugin({
                     chunkFilename: 'styles.[contenthash].css'
                 }),
-                new webpack.HotModuleReplacementPlugin()
-            ]
+                devMode && new webpack.HotModuleReplacementPlugin()
+            ].filter((i): i is webpack.Plugin => i !== false)
         }
     }
 
