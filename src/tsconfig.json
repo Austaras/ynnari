@@ -2,6 +2,10 @@
   "compilerOptions": {
     "module": "ESNext",
     // "jsx": "react",
+    "sourceMap": true,
+    "types": [
+        "webpack-env"
+    ]
   },
   "extends": "../tsconfig.json"
 }

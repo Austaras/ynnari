@@ -13,6 +13,7 @@ TODO:
 - consider usage of babel
 - consider PWA support
 - consider separation of dev and prod mode of webpack config
+- consider optimization for http/2
 - add test support
 - add lint support
 - CSS sourcemap not work in Firefox due to [bug](https://github.com/mozilla/source-map/issues/275)

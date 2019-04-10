@@ -1,6 +1,7 @@
 import webpack from 'webpack'
 
 import CleanWebpackPlugin from 'clean-webpack-plugin'
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 
@@ -39,6 +40,7 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
                     // watch index.html changes
                     (server as any)._watch(__dirname + '/src/index.html')
                 },
+                clientLogLevel: 'warning',
                 hot: true
             },
             mode: devMode ? 'development' : 'production',
@@ -56,7 +58,7 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
                         test: /\.tsx?$/,
                         loader: 'ts-loader',
                         options: {
-                            transpileOnly: !devMode
+                            transpileOnly: devMode
                         },
                         exclude: /node_modules/,
                     },
@@ -84,6 +86,9 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
                 }),
                 !devMode && new MiniCssExtractPlugin({
                     chunkFilename: 'styles.[contenthash].css'
+                }),
+                devMode && new ForkTsCheckerWebpackPlugin({
+                    tslint: true
                 }),
                 devMode && new webpack.HotModuleReplacementPlugin()
             ].filter((i): i is webpack.Plugin => i !== false)
