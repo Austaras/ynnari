@@ -5,7 +5,8 @@
     "scripts": {
         "build": "webpack --mode='production'",
         "lint": "tslint --project .",
-        "serve": "webpack-dev-server"
+        "serve": "webpack-dev-server",
+        "test": "echo 'not implemented yet!'"
     },
     "devDependencies": {
         "@types/html-webpack-plugin": "^3.2.0",
