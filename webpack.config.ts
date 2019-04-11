@@ -3,28 +3,34 @@ import webpack from 'webpack'
 import CleanWebpackPlugin from 'clean-webpack-plugin'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
+import { LicenseWebpackPlugin } from 'license-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 
 type Parameter = Record<string, any>
+
+console.log(process.argv)
 
 const config: (env: Parameter, args: Parameter) => webpack.Configuration =
     (_: Parameter, args: Parameter) => {
         const devMode = args.mode !== 'production'
         return {
-            entry: [
-                __dirname + '/src/main.ts',
-                __dirname + '/src/styles.scss'
-            ],
+            entry: {
+                polyfills: __dirname + '/src/polyfills.ts',
+                main: [
+                    __dirname + '/src/main.ts',
+                    __dirname + '/src/styles.scss'
+                ],
+            },
             devtool: devMode ?
-                'cheap-module-eval-source-map' : 'nosources-source-map',
+                'inline-cheap-module-source-map' : 'nosources-source-map',
             output: {
                 path: __dirname + '/dist',
                 filename: devMode ? '[name].js' : '[name].[contenthash].js'
             },
             optimization: {
                 runtimeChunk: 'single',
-                // minimize: false,
                 splitChunks: {
+                    chunks: 'all',
                     cacheGroups: {
                         vendor: {
                             test: /[\\/]node_modules[\\/]/,
@@ -45,36 +51,44 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
             },
             mode: devMode ? 'development' : 'production',
             module: {
-                rules: [
-                    {
-                        test: /\.scss$/,
-                        use: [
-                            devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-                            'css-loader',
-                            'sass-loader'
-                        ]
-                    },
-                    {
-                        test: /\.tsx?$/,
-                        loader: 'ts-loader',
-                        options: {
-                            transpileOnly: devMode
-                        },
-                        exclude: /node_modules/,
-                    },
-                    {
-                        test: /\.(html)$/,
-                        loader: 'html-loader'
-                    },
-                    {
-                        test: /\.(png|jpg|gif|svg|webp)$/,
-                        loader: 'url-loader',
-                        options: {
-                            name: devMode ? '[name].[ext]' : 'assets/[name].[ext]?[hash]',
-                            limit: 1024
+                rules: [{
+                    test: /\.scss$/,
+                    use: [
+                        devMode ? {
+                            loader: 'style-loader',
+                            options: {
+                                sourceMap: true
+                            }
+                        } : MiniCssExtractPlugin.loader, {
+                            loader: 'css-loader',
+                            options: {
+                                sourceMap: true
+                            }
+                        }, {
+                            loader: 'sass-loader',
+                            options: {
+                                sourceMap: true
+                            }
                         }
+                    ]
+                }, {
+                    test: /\.tsx?$/,
+                    loader: 'ts-loader',
+                    options: {
+                        transpileOnly: devMode
+                    },
+                    include: /src/,
+                }, {
+                    test: /\.(html)$/,
+                    loader: 'html-loader'
+                }, {
+                    test: /\.(png|jpg|gif|svg|webp)$/,
+                    loader: 'url-loader',
+                    options: {
+                        name: devMode ? '[name].[ext]' : 'assets/[name].[ext]?[hash]',
+                        limit: 1024
                     }
-                ],
+                }],
             },
             resolve: {
                 extensions: ['.tsx', '.ts', '.js']
@@ -88,9 +102,13 @@ const config: (env: Parameter, args: Parameter) => webpack.Configuration =
                     chunkFilename: 'styles.[contenthash].css'
                 }),
                 devMode && new ForkTsCheckerWebpackPlugin({
-                    tslint: true
+                    tslint: true,
                 }),
-                devMode && new webpack.HotModuleReplacementPlugin()
+                devMode && new webpack.HotModuleReplacementPlugin(),
+                // because why not
+                !devMode && new LicenseWebpackPlugin({
+                    perChunkOutput: false
+                })
             ].filter((i): i is webpack.Plugin => i !== false)
         }
     }

@@ -9,8 +9,8 @@ TODO:
 - use eslint instead of tslint
 - use incoming webpack 5
 - integrate postcss
-- reconsider HMR support
 - consider usage of babel
+- consider usage of thread-loader & cache-loader
 - consider PWA support
 - consider separation of dev and prod mode of webpack config
 - consider optimization for http/2
