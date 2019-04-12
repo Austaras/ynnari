@@ -5,12 +5,49 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { LicenseWebpackPlugin } from 'license-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import ScriptExtHtmlWebpackPlugin from 'script-ext-html-webpack-plugin'
 
 const modeArg: string | undefined = process.argv
     .filter(str => str.startsWith('--mode'))[0]
 const mode = modeArg !== undefined ?
     modeArg.split('=')[1].trim() : 'development'
 const devMode = mode !== 'production'
+
+const rules: webpack.RuleSetRule[] = [
+    {
+        test: /\.scss$/,
+        use: [
+            devMode ? 'style-loader' : MiniCssExtractPlugin.loader, {
+                loader: 'css-loader',
+                options: {
+                    sourceMap: true
+                }
+            }, {
+                loader: 'sass-loader',
+                options: {
+                    sourceMap: true
+                }
+            }
+        ]
+    }, {
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
+        options: {
+            transpileOnly: devMode
+        },
+        include: /src/,
+    }, {
+        test: /\.(html)$/,
+        loader: 'html-loader'
+    }, {
+        test: /\.(png|jpg|gif|svg|webp)$/,
+        loader: 'url-loader',
+        options: {
+            name: devMode ? '[name].[ext]' : 'assets/[name].[ext]?[hash]',
+            limit: 1024
+        }
+    }
+]
 
 const config: webpack.Configuration = {
     entry: {
@@ -49,46 +86,7 @@ const config: webpack.Configuration = {
         hot: true
     },
     mode: devMode ? 'development' : 'production',
-    module: {
-        rules: [{
-            test: /\.scss$/,
-            use: [
-                devMode ? {
-                    loader: 'style-loader',
-                    options: {
-                        sourceMap: true
-                    }
-                } : MiniCssExtractPlugin.loader, {
-                    loader: 'css-loader',
-                    options: {
-                        sourceMap: true
-                    }
-                }, {
-                    loader: 'sass-loader',
-                    options: {
-                        sourceMap: true
-                    }
-                }
-            ]
-        }, {
-            test: /\.tsx?$/,
-            loader: 'ts-loader',
-            options: {
-                transpileOnly: devMode
-            },
-            include: /src/,
-        }, {
-            test: /\.(html)$/,
-            loader: 'html-loader'
-        }, {
-            test: /\.(png|jpg|gif|svg|webp)$/,
-            loader: 'url-loader',
-            options: {
-                name: devMode ? '[name].[ext]' : 'assets/[name].[ext]?[hash]',
-                limit: 1024
-            }
-        }],
-    },
+    module: { rules },
     resolve: {
         extensions: ['.tsx', '.ts', '.js']
     },
@@ -97,10 +95,20 @@ const config: webpack.Configuration = {
         new HtmlWebpackPlugin({
             template: 'src/index.html'
         }),
+        // only in dev
         devMode && new ForkTsCheckerWebpackPlugin({
             tslint: true,
         }),
         devMode && new webpack.HotModuleReplacementPlugin(),
+        // only in prod
+        new ScriptExtHtmlWebpackPlugin({
+            defaultAttribute: 'defer',
+            sync: 'polyfills',
+            custom: {
+                test: 'polyfills',
+                attribute: 'nomodule'
+            }
+        }),
         devMode || new MiniCssExtractPlugin({
             chunkFilename: 'styles.[contenthash].css'
         }),
@@ -109,7 +117,6 @@ const config: webpack.Configuration = {
             perChunkOutput: false
         })
     ].filter((i): i is webpack.Plugin => typeof i !== 'boolean')
-    // see https://jsperf.com/is-boolean/3
 }
 
 export default config
