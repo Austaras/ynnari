@@ -22,6 +22,7 @@ const rules: webpack.RuleSetRule[] = [
         loader: 'babel-loader',
         options: {
             cacheDirectory: __dirname + '/.cache',
+            parserOpts: { strictMode: true },
             presets: [
                 ['@babel/preset-env', { modules: false }]
             ],
@@ -43,7 +44,14 @@ const rules: webpack.RuleSetRule[] = [
     }, {
         test: /\.scss$/,
         use: [
-            devMode ? 'style-loader' : MiniCssExtractPlugin.loader, {
+            devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+            // because this will cause trouble in Firefox
+            devMode || {
+                loader: 'css-loader',
+                options: {
+                    sourceMap: true
+                }
+            }, {
                 loader: 'postcss-loader',
                 options: {
                     sourceMap: 'inline'
@@ -54,7 +62,7 @@ const rules: webpack.RuleSetRule[] = [
                     sourceMap: true
                 }
             }
-        ]
+        ].filter((i): i is string | webpack.NewLoader => typeof i !== 'boolean')
     }, {
         test: /\.(png|jpg|gif|svg|webp)$/,
         loader: 'url-loader',
@@ -73,15 +81,17 @@ const config: webpack.Configuration = {
         ],
         polyfills: __dirname + '/src/polyfills.ts',
     },
+    // eval source map is faster when rebuild, but make complied code
+    // totally unreadable
+    // use inline-cheap-module-source-map instead if needed
     devtool: devMode ?
-        'inline-cheap-module-source-map' : 'nosources-source-map',
+        'cheap-module-eval-source-map' : 'nosources-source-map',
     output: {
         path: __dirname + '/dist',
         filename: devMode ? '[name].js' : '[name].[contenthash].js'
     },
     optimization: {
         runtimeChunk: 'single',
-        // minimize: false,
         splitChunks: {
             chunks: 'all',
             minChunks: 2,

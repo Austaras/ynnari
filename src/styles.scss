@@ -1,25 +1,3 @@
-// body,
-// body * {
-//     all: initial
-// }
-
-::placeholder {
-    color: darkcyan
-  }
-
-p {
-    // background-image: url('./assets/thumb.svg');
-    display: block;
-    background-size: 100% 100%;
-    width: 16px;
-    height: 16px;
-    span {
-        color: navy
-    }
-}
-
-@media (min-resolution: 2dppx) {
-    .image {
-        background-image: url(image@2x.png);
-    }
+body * {
+    all: initial
 }
