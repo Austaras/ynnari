@@ -15,12 +15,38 @@ const devMode = mode !== 'production'
 
 const rules: webpack.RuleSetRule[] = [
     {
+        test: /\.tsx?$/,
+        // use babel-loader because
+        // 1) vue need it 2) it support browserslists 3) it's slightly faster
+        // however it adds alot depend, it's hardly to tell it's good or not
+        loader: 'babel-loader',
+        options: {
+            cacheDirectory: __dirname + '/.cache',
+            presets: [
+                ['@babel/preset-env', { modules: false }]
+            ],
+            plugins: [
+                ['@babel/plugin-transform-typescript', {
+                    isTSX: true, jsxPragma: 'h'
+                }],
+                ['@babel/plugin-proposal-class-properties', { loose: true }],
+                // use these when in need
+                // 'babel-plugin-transform-async-to-promises',
+                ['@babel/plugin-proposal-decorators', { legacy: true }],
+                ['@babel/plugin-transform-react-jsx', { pragma: 'h' }]
+            ]
+        },
+        include: /src/,
+    }, {
+        test: /\.(html)$/,
+        loader: 'html-loader'
+    }, {
         test: /\.scss$/,
         use: [
             devMode ? 'style-loader' : MiniCssExtractPlugin.loader, {
-                loader: 'css-loader',
+                loader: 'postcss-loader',
                 options: {
-                    sourceMap: true
+                    sourceMap: 'inline'
                 }
             }, {
                 loader: 'sass-loader',
@@ -29,16 +55,6 @@ const rules: webpack.RuleSetRule[] = [
                 }
             }
         ]
-    }, {
-        test: /\.tsx?$/,
-        loader: 'ts-loader',
-        options: {
-            transpileOnly: devMode
-        },
-        include: /src/,
-    }, {
-        test: /\.(html)$/,
-        loader: 'html-loader'
     }, {
         test: /\.(png|jpg|gif|svg|webp)$/,
         loader: 'url-loader',
@@ -51,11 +67,11 @@ const rules: webpack.RuleSetRule[] = [
 
 const config: webpack.Configuration = {
     entry: {
-        polyfills: __dirname + '/src/polyfills.ts',
         main: [
             __dirname + '/src/main.ts',
             __dirname + '/src/styles.scss'
         ],
+        polyfills: __dirname + '/src/polyfills.ts',
     },
     devtool: devMode ?
         'inline-cheap-module-source-map' : 'nosources-source-map',
@@ -65,13 +81,20 @@ const config: webpack.Configuration = {
     },
     optimization: {
         runtimeChunk: 'single',
+        // minimize: false,
         splitChunks: {
             chunks: 'all',
+            minChunks: 2,
             cacheGroups: {
                 vendor: {
-                    test: /[\\/]node_modules[\\/]/,
+                    test({ resource }, chunks) {
+                        return /node_modules/.test(resource) &&
+                            chunks[0].name !== 'polyfills'
+                    },
                     name: 'vendors',
-                    chunks: 'all'
+                    chunks: 'all',
+                    minChunks: 1,
+                    minSize: 8192
                 }
             }
         }
@@ -96,11 +119,12 @@ const config: webpack.Configuration = {
             template: 'src/index.html'
         }),
         // only in dev
-        devMode && new ForkTsCheckerWebpackPlugin({
-            tslint: true,
-        }),
         devMode && new webpack.HotModuleReplacementPlugin(),
         // only in prod
+        new ForkTsCheckerWebpackPlugin({
+            tslint: true,
+            tsconfig: __dirname + '/src/tsconfig.json'
+        }),
         new ScriptExtHtmlWebpackPlugin({
             defaultAttribute: 'defer',
             sync: 'polyfills',

@@ -1,7 +1,11 @@
-body,
-body * {
-    all: initial
-}
+// body,
+// body * {
+//     all: initial
+// }
+
+::placeholder {
+    color: darkcyan
+  }
 
 p {
     // background-image: url('./assets/thumb.svg');
@@ -11,5 +15,11 @@ p {
     height: 16px;
     span {
         color: navy
+    }
+}
+
+@media (min-resolution: 2dppx) {
+    .image {
+        background-image: url(image@2x.png);
     }
 }
