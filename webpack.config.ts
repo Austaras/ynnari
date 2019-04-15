@@ -7,11 +7,11 @@ import { LicenseWebpackPlugin } from 'license-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import ScriptExtHtmlWebpackPlugin from 'script-ext-html-webpack-plugin'
 
-const modeArg: string | undefined = process.argv
-    .filter(str => str.startsWith('--mode'))[0]
-const mode = modeArg !== undefined ?
-    modeArg.split('=')[1].trim() : 'development'
+const modeArg: string | undefined = process.argv.filter(str => str.startsWith('--mode'))[0]
+const mode = modeArg !== undefined ? modeArg.split('=')[1].trim() : 'development'
 const devMode = mode !== 'production'
+
+// const pragma = 'h'
 
 const rules: webpack.RuleSetRule[] = [
     {
@@ -23,25 +23,30 @@ const rules: webpack.RuleSetRule[] = [
         options: {
             cacheDirectory: __dirname + '/.cache',
             parserOpts: { strictMode: true },
-            presets: [
-                ['@babel/preset-env', { modules: false }]
-            ],
+            presets: [['@babel/preset-env', { modules: false }]],
             plugins: [
-                ['@babel/plugin-transform-typescript', {
-                    isTSX: true, jsxPragma: 'h'
-                }],
+                '@babel/plugin-transform-typescript',
+                // [
+                //     '@babel/plugin-transform-typescript',
+                //     {
+                //         isTSX: true,
+                //         jsxPragma: pragma
+                //     }
+                // ],
                 ['@babel/plugin-proposal-class-properties', { loose: true }],
                 // use these when in need
                 // 'babel-plugin-transform-async-to-promises',
-                ['@babel/plugin-proposal-decorators', { legacy: true }],
-                ['@babel/plugin-transform-react-jsx', { pragma: 'h' }]
+                // ['@babel/plugin-proposal-decorators', { legacy: true }],
+                // ['@babel/plugin-transform-react-jsx', { pragma }]
             ]
         },
-        include: /src/,
-    }, {
+        include: /src/
+    },
+    {
         test: /\.(html)$/,
         loader: 'html-loader'
-    }, {
+    },
+    {
         test: /\.scss$/,
         use: [
             devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
@@ -51,19 +56,22 @@ const rules: webpack.RuleSetRule[] = [
                 options: {
                     sourceMap: true
                 }
-            }, {
+            },
+            {
                 loader: 'postcss-loader',
                 options: {
                     sourceMap: 'inline'
                 }
-            }, {
+            },
+            {
                 loader: 'sass-loader',
                 options: {
                     sourceMap: true
                 }
             }
         ].filter((i): i is string | webpack.NewLoader => typeof i !== 'boolean')
-    }, {
+    },
+    {
         test: /\.(png|jpg|gif|svg|webp)$/,
         loader: 'url-loader',
         options: {
@@ -75,17 +83,13 @@ const rules: webpack.RuleSetRule[] = [
 
 const config: webpack.Configuration = {
     entry: {
-        main: [
-            __dirname + '/src/main.ts',
-            __dirname + '/src/styles.scss'
-        ],
-        polyfills: __dirname + '/src/polyfills.ts',
+        main: [__dirname + '/src/main.ts', __dirname + '/src/styles.scss'],
+        polyfills: __dirname + '/src/polyfills.ts'
     },
     // eval source map is faster when rebuild, but make complied code
     // totally unreadable
     // use inline-cheap-module-source-map instead if needed
-    devtool: devMode ?
-        'cheap-module-eval-source-map' : 'nosources-source-map',
+    devtool: devMode ? 'cheap-module-eval-source-map' : 'nosources-source-map',
     output: {
         path: __dirname + '/dist',
         filename: devMode ? '[name].js' : '[name].[contenthash].js'
@@ -98,8 +102,7 @@ const config: webpack.Configuration = {
             cacheGroups: {
                 vendor: {
                     test({ resource }, chunks) {
-                        return /node_modules/.test(resource) &&
-                            chunks[0].name !== 'polyfills'
+                        return /node_modules/.test(resource) && chunks[0].name !== 'polyfills'
                     },
                     name: 'vendors',
                     chunks: 'all',
@@ -143,13 +146,15 @@ const config: webpack.Configuration = {
                 attribute: 'nomodule'
             }
         }),
-        devMode || new MiniCssExtractPlugin({
-            chunkFilename: 'styles.[contenthash].css'
-        }),
+        devMode ||
+            new MiniCssExtractPlugin({
+                chunkFilename: 'styles.[contenthash].css'
+            }),
         // because why not
-        devMode || new LicenseWebpackPlugin({
-            perChunkOutput: false
-        })
+        devMode ||
+            new LicenseWebpackPlugin({
+                perChunkOutput: false
+            })
     ].filter((i): i is webpack.Plugin => typeof i !== 'boolean')
 }
 

@@ -1,8 +1,6 @@
 {
   "compilerOptions": {
     "module": "ESNext",
-    "jsx": "react",
-    "jsxFactory": "h",
     "sourceMap": true,
     "types": [
         "webpack-env"
