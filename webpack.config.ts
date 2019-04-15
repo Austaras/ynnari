@@ -13,6 +13,10 @@ const devMode = mode !== 'production'
 
 // const pragma = 'h'
 
+function notBoolean(i: unknown)  {
+    return typeof i !== 'boolean'
+}
+
 const rules: webpack.RuleSetRule[] = [
     {
         test: /\.tsx?$/,
@@ -33,7 +37,7 @@ const rules: webpack.RuleSetRule[] = [
                 //         jsxPragma: pragma
                 //     }
                 // ],
-                ['@babel/plugin-proposal-class-properties', { loose: true }],
+                ['@babel/plugin-proposal-class-properties', { loose: true }]
                 // use these when in need
                 // 'babel-plugin-transform-async-to-promises',
                 // ['@babel/plugin-proposal-decorators', { legacy: true }],
@@ -60,7 +64,11 @@ const rules: webpack.RuleSetRule[] = [
             {
                 loader: 'postcss-loader',
                 options: {
-                    sourceMap: 'inline'
+                    sourceMap: 'inline',
+                    plugins: [
+                        require('autoprefixer')(),
+                        devMode || require('cssnano')()
+                    ].filter(notBoolean)
                 }
             },
             {
@@ -69,7 +77,7 @@ const rules: webpack.RuleSetRule[] = [
                     sourceMap: true
                 }
             }
-        ].filter((i): i is string | webpack.NewLoader => typeof i !== 'boolean')
+        ].filter(notBoolean) as (webpack.Loader | string)[]
     },
     {
         test: /\.(png|jpg|gif|svg|webp)$/,
@@ -155,7 +163,7 @@ const config: webpack.Configuration = {
             new LicenseWebpackPlugin({
                 perChunkOutput: false
             })
-    ].filter((i): i is webpack.Plugin => typeof i !== 'boolean')
+    ].filter(notBoolean) as webpack.Plugin[]
 }
 
 export default config
