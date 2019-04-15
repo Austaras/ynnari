@@ -13,7 +13,7 @@ const devMode = mode !== 'production'
 
 // const pragma = 'h'
 
-function notBoolean(i: unknown)  {
+function notBoolean(i: unknown) {
     return typeof i !== 'boolean'
 }
 
@@ -66,7 +66,7 @@ const rules: webpack.RuleSetRule[] = [
                 options: {
                     sourceMap: 'inline',
                     plugins: [
-                        require('autoprefixer')(),
+                        require('postcss-preset-env')(),
                         devMode || require('cssnano')()
                     ].filter(notBoolean)
                 }
