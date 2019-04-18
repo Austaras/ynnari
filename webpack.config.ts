@@ -37,6 +37,13 @@ const rules: webpack.RuleSetRule[] = [
                 //         jsxPragma: pragma
                 //     }
                 // ],
+                [
+                    '@babel/plugin-proposal-object-rest-spread',
+                    {
+                        loose: true,
+                        useBuiltIns: true
+                    }
+                ],
                 ['@babel/plugin-proposal-class-properties', { loose: true }]
                 // use these when in need
                 // 'babel-plugin-transform-async-to-promises',
@@ -110,7 +117,9 @@ const config: webpack.Configuration = {
             cacheGroups: {
                 vendor: {
                     test({ resource }, chunks) {
-                        return /node_modules/.test(resource) && chunks[0].name !== 'polyfills'
+                        const onlyByPolyfill =
+                            chunks.length === 1 && chunks[0].name === 'polyfills'
+                        return /node_modules/.test(resource) && !onlyByPolyfill
                     },
                     name: 'vendors',
                     chunks: 'all',
