@@ -4,7 +4,6 @@
     "license": "MIT",
     "scripts": {
         "build": "webpack --mode='production'",
-        "lint": "tslint --project .",
         "serve": "webpack-dev-server",
         "test": "echo 'not implemented yet!'"
     },

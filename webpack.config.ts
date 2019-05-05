@@ -152,8 +152,7 @@ const config: webpack.Configuration = {
         devMode && new webpack.HotModuleReplacementPlugin(),
         // only in prod
         new ForkTsCheckerWebpackPlugin({
-            tslint: true,
-            tsconfig: __dirname + '/src/tsconfig.json'
+            tslint: true
         }),
         new ScriptExtHtmlWebpackPlugin({
             defaultAttribute: 'defer',
