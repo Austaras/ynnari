@@ -130,7 +130,6 @@ const config: webpack.Configuration = {
         }
     },
     devServer: {
-        contentBase: __dirname + '/dist',
         before(_, server) {
             // watch index.html changes
             (server as any)._watch(__dirname + '/src/index.html')
@@ -144,13 +143,9 @@ const config: webpack.Configuration = {
         extensions: ['.tsx', '.ts', '.js']
     },
     plugins: [
-        new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             template: 'src/index.html'
         }),
-        // only in dev
-        devMode && new webpack.HotModuleReplacementPlugin(),
-        // only in prod
         new ForkTsCheckerWebpackPlugin({
             tslint: true
         }),
@@ -162,6 +157,10 @@ const config: webpack.Configuration = {
                 attribute: 'nomodule'
             }
         }),
+        // only in dev
+        devMode && new webpack.HotModuleReplacementPlugin(),
+        // only in prod
+        devMode || new CleanWebpackPlugin(),
         devMode ||
             new MiniCssExtractPlugin({
                 chunkFilename: 'styles.[contenthash].css'
