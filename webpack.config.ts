@@ -22,7 +22,7 @@ const rules: webpack.RuleSetRule[] = [
         test: /\.tsx?$/,
         // use babel-loader because
         // 1) vue need it 2) it support browserslists 3) it's slightly faster
-        // however it adds alot depend, it's hardly to tell it's good or not
+        // however it adds alot dependency, it's hardly to tell it's good or not
         loader: 'babel-loader',
         options: {
             cacheDirectory: __dirname + '/.cache',
@@ -61,7 +61,7 @@ const rules: webpack.RuleSetRule[] = [
         test: /\.scss$/,
         use: [
             devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-            // because this will cause trouble in Firefox
+            // because mini-css-extract-plugin need it
             devMode || {
                 loader: 'css-loader',
                 options: {
