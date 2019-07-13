@@ -1,0 +1,101 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "overrides": [
+        {
+            "files": ["*.ts", "*.tsx"]
+        }
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:import/warnings",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/eslint-recommended"
+    ],
+    "parserOptions": {
+        "project": "./tsconfig.json",
+        "ecmaVersion": 10,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "plugins": ["@typescript-eslint"],
+    "rules": {
+        "arrow-body-style": ["warn", "as-needed"],
+        "curly": ["warn", "multi-line"],
+        "dot-notation": "warn",
+        "eol-last": "warn",
+        "eqeqeq": "warn",
+        "no-multi-spaces": "warn",
+        "spaced-comment": "warn",
+        "max-len": ["warn", { "code": 110 }],
+        "no-console": "off",
+        "new-parens": "warn",
+        "no-caller": "warn",
+        "no-eval": "warn",
+        "no-new-wrappers": "warn",
+        "no-throw-literal": "warn",
+        "no-trailing-spaces": "warn",
+        "no-var": "warn",
+        "no-multiple-empty-lines": ["warn", { "max": 1, "maxEOF": 0 }],
+        "no-undef-init": "warn",
+        "no-unused-expressions": "warn",
+        "object-shorthand": "warn",
+        "quotes": ["error", "single", { "avoidEscape": true }],
+        "radix": "warn",
+        "semi": ["warn", "never"],
+        "space-before-function-paren": ["warn", "never"],
+        "import/newline-after-import": "warn",
+        "import/order": [
+            "warn",
+            {
+                "groups": [["internal", "external", "builtin"], ["index", "sibling", "parent"]],
+                "newlines-between": "always"
+            }
+        ],
+        "@typescript-eslint/array-type": "off",
+        "@typescript-eslint/explicit-member-accessibility": [
+            "warn",
+            { "accessibility": "explicit" }
+        ],
+        "@typescript-eslint/prefer-interface": "off", // deprecated
+        "@typescript-eslint/consistent-type-definitions": ["warn", "interface"],
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/member-delimiter-style": [
+            "warn",
+            {
+                "multiline": {
+                    "delimiter": "none",
+                    "requireLast": false
+                },
+                "singleline": {
+                    "delimiter": "comma",
+                    "requireLast": false
+                }
+            }
+        ],
+        "@typescript-eslint/member-ordering": [
+            "warn",
+            {
+                "classes": [
+                    "private-static-field",
+                    "protected-static-field",
+                    "public-static-method",
+                    "constructor",
+                    "protected-static-method",
+                    "private-static-method",
+                    "protected-static-method",
+                    "public-static-method",
+                    "private-instance-method",
+                    "protected-instance-method",
+                    "public-instance-method"
+                ]
+            }
+        ],
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/prefer-function-type": "warn",
+        "@typescript-eslint/prefer-for-of": "warn",
+        "@typescript-eslint/type-annotation-spacing": ["warn", { "before": false, "after": true }],
+        "@typescript-eslint/unified-signatures": "warn"
+    }
+}

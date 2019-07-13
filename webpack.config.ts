@@ -1,5 +1,4 @@
 import webpack from 'webpack'
-
 import CleanWebpackPlugin from 'clean-webpack-plugin'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
@@ -147,7 +146,8 @@ const config: webpack.Configuration = {
             template: 'src/index.html'
         }),
         new ForkTsCheckerWebpackPlugin({
-            tslint: true
+            eslint: true,
+            useTypescriptIncrementalApi: false
         }),
         new ScriptExtHtmlWebpackPlugin({
             defaultAttribute: 'defer',
