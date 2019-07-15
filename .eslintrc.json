@@ -26,6 +26,7 @@
         "dot-notation": "warn",
         "eol-last": "warn",
         "eqeqeq": "warn",
+        "func-call-spacing": ["warn", "never"],
         "max-len": ["warn", { "code": 110 }],
         "new-parens": "warn",
         "no-console": "off",
@@ -50,7 +51,7 @@
             "warn",
             {
                 "groups": [["internal", "external", "builtin"], ["index", "sibling", "parent"]],
-                "newlines-between": "always"
+                "newlines-between": "always-and-inside-groups"
             }
         ],
         "@typescript-eslint/array-type": "off",
