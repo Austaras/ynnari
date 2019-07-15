@@ -146,8 +146,7 @@ const config: webpack.Configuration = {
             template: 'src/index.html'
         }),
         new ForkTsCheckerWebpackPlugin({
-            eslint: true,
-            useTypescriptIncrementalApi: false
+            eslint: true
         }),
         new ScriptExtHtmlWebpackPlugin({
             defaultAttribute: 'defer',

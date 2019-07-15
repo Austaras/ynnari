@@ -1,11 +1,4 @@
-const a = [1, 2, 3, '2']
-for (let i = 0; i < a.length; i++) {
-    console.log(i)
+if (module.hot) {
+    console.log('HMR updated')
+    module.hot.accept()
 }
-
-function foo() {
-    return 1
-}
-
-const x: 'bar' = 'bar'
-console.log(x)

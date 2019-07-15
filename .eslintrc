@@ -26,13 +26,12 @@
         "dot-notation": "warn",
         "eol-last": "warn",
         "eqeqeq": "warn",
-        "no-multi-spaces": "warn",
-        "spaced-comment": "warn",
         "max-len": ["warn", { "code": 110 }],
-        "no-console": "off",
         "new-parens": "warn",
+        "no-console": "off",
         "no-caller": "warn",
         "no-eval": "warn",
+        "no-multi-spaces": "warn",
         "no-new-wrappers": "warn",
         "no-throw-literal": "warn",
         "no-trailing-spaces": "warn",
@@ -45,6 +44,7 @@
         "radix": "warn",
         "semi": ["warn", "never"],
         "space-before-function-paren": ["warn", "never"],
+        "spaced-comment": "warn",
         "import/newline-after-import": "warn",
         "import/order": [
             "warn",
@@ -54,13 +54,13 @@
             }
         ],
         "@typescript-eslint/array-type": "off",
+        "@typescript-eslint/prefer-interface": "off", // deprecated
+        "@typescript-eslint/consistent-type-definitions": ["warn", "interface"],
+        "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/explicit-member-accessibility": [
             "warn",
             { "accessibility": "explicit" }
         ],
-        "@typescript-eslint/prefer-interface": "off", // deprecated
-        "@typescript-eslint/consistent-type-definitions": ["warn", "interface"],
-        "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/member-delimiter-style": [
             "warn",
             {
