@@ -46,6 +46,7 @@
         "semi": ["warn", "never"],
         "space-before-function-paren": ["warn", "never"],
         "spaced-comment": "warn",
+        "space-infix-ops": ["warn"],
         "import/newline-after-import": "warn",
         "import/order": [
             "warn",

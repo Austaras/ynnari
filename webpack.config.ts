@@ -72,10 +72,9 @@ const rules: webpack.RuleSetRule[] = [
                 loader: 'postcss-loader',
                 options: {
                     sourceMap: 'inline',
-                    plugins: [
-                        require('postcss-preset-env')(),
-                        devMode || require('cssnano')()
-                    ].filter(notBoolean)
+                    plugins: [require('postcss-preset-env')(), devMode || require('cssnano')()].filter(
+                        notBoolean
+                    )
                 }
             },
             {
@@ -117,8 +116,7 @@ const config: webpack.Configuration = {
             cacheGroups: {
                 vendor: {
                     test({ resource }, chunks) {
-                        const onlyByPolyfill =
-                            chunks.length === 1 && chunks[0].name === 'polyfills'
+                        const onlyByPolyfill = chunks.length === 1 && chunks[0].name === 'polyfills'
                         return /node_modules/.test(resource) && !onlyByPolyfill
                     },
                     name: 'vendors',
@@ -130,9 +128,9 @@ const config: webpack.Configuration = {
         }
     },
     devServer: {
-        before(_, server) {
-            // watch index.html changes
-            (server as any)._watch(__dirname + '/src/index.html')
+        // watch index.html changes
+        before(_, server: any) {
+            server._watch(__dirname + '/src/index.html')
         },
         clientLogLevel: 'warning',
         hot: true
