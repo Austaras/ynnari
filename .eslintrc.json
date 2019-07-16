@@ -74,6 +74,7 @@
                 "allowTemplateLiterals": true
             }
         ],
+        "quote-props": ["warn", "as-needed"],
         "radix": "warn",
         "semi": [
             "warn",
