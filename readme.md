@@ -7,7 +7,6 @@ Using Typescript, TSLint, SCSS, Webpack and yarn
 TODO:
 - use stable version of html-webpack-plugin
 - use incoming webpack 5
-- consider use swc
 
 cannot complete due to lack of knowledge:
 - consider PWA support
@@ -17,4 +16,3 @@ currently cannot be done:
 - dead code elimination in dynamic import
 - transform async correctly, blocked by [issue](https://github.com/babel/babel/pull/7076)
 - CSS sourcemap not work in Firefox due to [bug](https://github.com/mozilla/source-map/issues/275)
-- use eslint instead of tslint, blocked by [issue](https://github.com/Realytics/fork-ts-checker-webpack-plugin/issues/203)
