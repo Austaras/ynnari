@@ -1,6 +1,6 @@
 import webpack from 'webpack'
 
-import CleanWebpackPlugin from 'clean-webpack-plugin'
+import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { LicenseWebpackPlugin } from 'license-webpack-plugin'
@@ -90,7 +90,7 @@ const rules: webpack.RuleSetRule[] = [
         loader: 'url-loader',
         options: {
             name: devMode ? '[name].[ext]' : 'assets/[name].[ext]?[hash]',
-            limit: 1024
+            limit: 1025
         }
     }
 ]
