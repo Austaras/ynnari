@@ -61,8 +61,7 @@ const rules: webpack.RuleSetRule[] = [
         test: /\.scss$/,
         use: [
             devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-            // because mini-css-extract-plugin need it
-            devMode || {
+            {
                 loader: 'css-loader',
                 options: {
                     sourceMap: true
@@ -71,7 +70,7 @@ const rules: webpack.RuleSetRule[] = [
             {
                 loader: 'postcss-loader',
                 options: {
-                    sourceMap: 'inline',
+                    sourceMap: true,
                     plugins: [require('postcss-preset-env')(), devMode || require('cssnano')()].filter(
                         notBoolean
                     )
