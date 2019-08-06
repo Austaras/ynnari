@@ -15,4 +15,3 @@ cannot complete due to lack of knowledge:
 currently cannot be done:
 - dead code elimination in dynamic import
 - transform async correctly, blocked by [issue](https://github.com/babel/babel/pull/7076)
-- CSS sourcemap not work in Firefox due to [bug](https://github.com/mozilla/source-map/issues/275)
