@@ -7,6 +7,7 @@ Using Typescript, TSLint, SCSS, Webpack and yarn
 TODO:
 - use stable version of html-webpack-plugin
 - use incoming webpack 5
+- seperate modern and leagcy build
 
 cannot complete due to lack of knowledge:
 - consider PWA support

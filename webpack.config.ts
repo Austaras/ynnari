@@ -1,4 +1,4 @@
-import webpack from 'webpack'
+import webpack, { HotModuleReplacementPlugin } from 'webpack'
 
 import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
@@ -156,7 +156,7 @@ const config: webpack.Configuration = {
             }
         }),
         // only in dev
-        devMode && new webpack.HotModuleReplacementPlugin(),
+        devMode && new HotModuleReplacementPlugin(),
         // only in prod
         devMode || new CleanWebpackPlugin(),
         devMode ||

@@ -2,10 +2,7 @@
     "parser": "@typescript-eslint/parser",
     "overrides": [
         {
-            "files": [
-                "*.ts",
-                "*.tsx"
-            ]
+            "files": ["*.ts", "*.tsx"]
         }
     ],
     "extends": [
@@ -22,30 +19,16 @@
             "jsx": true
         }
     },
-    "plugins": [
-        "@typescript-eslint"
-    ],
+    "plugins": ["@typescript-eslint"],
     "rules": {
-        "arrow-body-style": [
-            "warn",
-            "as-needed"
-        ],
-        "array-bracket-spacing": [
-            "warn",
-            "never"
-        ],
+        "arrow-body-style": ["warn", "as-needed"],
+        "array-bracket-spacing": ["warn", "never"],
         "comma-spacing": "warn",
-        "curly": [
-            "warn",
-            "multi-line"
-        ],
+        "curly": ["warn", "multi-line"],
         "dot-notation": "warn",
         "eol-last": "warn",
         "eqeqeq": "warn",
-        "func-call-spacing": [
-            "warn",
-            "never"
-        ],
+        "func-call-spacing": ["warn", "never"],
         "key-spacing": "warn",
         "max-len": [
             "warn",
@@ -80,52 +63,31 @@
                 "allowTemplateLiterals": true
             }
         ],
-        "quote-props": [
-            "warn",
-            "as-needed"
-        ],
+        "quote-props": ["warn", "as-needed"],
         "radix": "warn",
-        "semi": [
-            "warn",
-            "never"
-        ],
+        "semi": ["warn", "never"],
         "space-before-function-paren": [
             "warn",
-            "never"
+            {
+                "anonymous": "always",
+                "named": "never",
+                "asyncArrow": "always"
+            }
         ],
         "spaced-comment": "warn",
-        "space-in-parens": [
-            "warn",
-            "never"
-        ],
-        "space-infix-ops": [
-            "warn"
-        ],
+        "space-in-parens": ["warn", "never"],
+        "space-infix-ops": ["warn"],
         "import/newline-after-import": "warn",
         "import/order": [
             "warn",
             {
-                "groups": [
-                    [
-                        "internal",
-                        "external",
-                        "builtin"
-                    ],
-                    [
-                        "index",
-                        "sibling",
-                        "parent"
-                    ]
-                ],
+                "groups": [["internal", "external", "builtin"], ["index", "sibling", "parent"]],
                 "newlines-between": "always-and-inside-groups"
             }
         ],
         "@typescript-eslint/array-type": "off",
         "@typescript-eslint/prefer-interface": "off", // deprecated
-        "@typescript-eslint/consistent-type-definitions": [
-            "warn",
-            "interface"
-        ],
+        "@typescript-eslint/consistent-type-definitions": ["warn", "interface"],
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/explicit-member-accessibility": [
             "warn",
