@@ -131,6 +131,7 @@ const config: webpack.Configuration = {
         before(_, server: any) {
             server._watch(__dirname + '/src/index.html')
         },
+        historyApiFallback: true,
         clientLogLevel: 'warning',
         hot: true
     },
