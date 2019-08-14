@@ -9,7 +9,8 @@
         "eslint:recommended",
         "plugin:import/warnings",
         "plugin:@typescript-eslint/recommended",
-        "plugin:@typescript-eslint/eslint-recommended"
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking"
     ],
     "parserOptions": {
         "project": "./tsconfig.json",
@@ -41,10 +42,6 @@
         "no-caller": "warn",
         "no-eval": "warn",
         "no-multi-spaces": "warn",
-        "no-new-wrappers": "warn",
-        "no-throw-literal": "warn",
-        "no-trailing-spaces": "warn",
-        "no-var": "warn",
         "no-multiple-empty-lines": [
             "warn",
             {
@@ -52,11 +49,15 @@
                 "maxEOF": 0
             }
         ],
+        "no-new-wrappers": "warn",
+        "no-throw-literal": "warn",
+        "no-trailing-spaces": "warn",
+        "no-var": "warn",
         "no-undef-init": "warn",
         "no-unused-expressions": "warn",
         "object-shorthand": "warn",
         "quotes": [
-            "error",
+            "warn",
             "single",
             {
                 "avoidEscape": true,
@@ -69,7 +70,7 @@
         "space-before-function-paren": [
             "warn",
             {
-                "anonymous": "always",
+                "anonymous": "never",
                 "named": "never",
                 "asyncArrow": "always"
             }
@@ -86,8 +87,12 @@
             }
         ],
         "@typescript-eslint/array-type": "off",
-        "@typescript-eslint/prefer-interface": "off", // deprecated
+        "@typescript-eslint/ban-ts-ignore": "off",
         "@typescript-eslint/consistent-type-definitions": ["warn", "interface"],
+        "@typescript-eslint/consistent-type-assertions": [
+            "warn",
+            { "assertionStyle": "as", "objectLiteralTypeAssertions": "allow-as-parameter" }
+        ],
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/explicit-member-accessibility": [
             "warn",
@@ -129,6 +134,7 @@
                 ]
             }
         ],
+        "@typescript-eslint/no-empty-function": "off",
         "@typescript-eslint/no-empty-interface": [
             "warn",
             {
@@ -136,14 +142,8 @@
             }
         ],
         "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-for-in-array": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
-        "@typescript-eslint/no-object-literal-type-assertion": [
-            "warn",
-            {
-                "allowAsParameter": true
-            }
-        ],
-        "@typescript-eslint/no-parameter-properties": "off",
         "@typescript-eslint/no-unused-vars": "off",
         "@typescript-eslint/no-use-before-define": "off",
         "@typescript-eslint/prefer-function-type": "warn",
