@@ -71,6 +71,7 @@ const rules: webpack.RuleSetRule[] = [
                 loader: 'postcss-loader',
                 options: {
                     sourceMap: true,
+                    // eslint-disable-next-line @typescript-eslint/no-var-requires
                     plugins: [require('postcss-preset-env')(), devMode || require('cssnano')()].filter(
                         notBoolean
                     )
@@ -116,7 +117,7 @@ const config: webpack.Configuration = {
                 vendor: {
                     test({ resource }, chunks) {
                         const onlyByPolyfill = chunks.length === 1 && chunks[0].name === 'polyfills'
-                        return /node_modules/.test(resource) && !onlyByPolyfill
+                        return resource.include('node_modules') && !onlyByPolyfill
                     },
                     name: 'vendors',
                     chunks: 'all',
