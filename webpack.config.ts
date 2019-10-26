@@ -1,3 +1,6 @@
+import fs from 'fs'
+import { jsonc } from 'jsonc'
+
 import webpack, { HotModuleReplacementPlugin } from 'webpack'
 
 import { CleanWebpackPlugin } from 'clean-webpack-plugin'
@@ -7,13 +10,14 @@ import { LicenseWebpackPlugin } from 'license-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import ScriptExtHtmlWebpackPlugin from 'script-ext-html-webpack-plugin'
 
-const modeArg: string | undefined = process.argv.filter(str => str.startsWith('--mode'))[0]
+const modeArg = process.argv.filter(str => str.startsWith('--mode')).shift()
 const mode = modeArg !== undefined ? modeArg.split('=')[1].trim() : 'development'
 const devMode = mode !== 'production'
+// should use ts but it's damn slow
+const TSConfig = fs.readFileSync('./tsconfig.json')
+const { jsx, jsxFactory, experimentalDecorators } = jsonc.parse(TSConfig.toString()).compilerOptions
 
-// const pragma = 'h'
-
-function notBoolean(i: unknown) {
+function notBoolean<T>(i: T): i is Exclude<T, boolean> {
     return typeof i !== 'boolean'
 }
 
@@ -27,38 +31,37 @@ const rules: webpack.RuleSetRule[] = [
         options: {
             cacheDirectory: __dirname + '/.cache',
             parserOpts: { strictMode: true },
-            presets: [['@babel/preset-env', { modules: false }]],
-            plugins: [
-                '@babel/plugin-transform-typescript',
-                // [
-                //     '@babel/plugin-transform-typescript',
-                //     {
-                //         isTSX: true,
-                //         jsxPragma: pragma
-                //     }
-                // ],
+            presets: [
                 [
-                    '@babel/plugin-proposal-object-rest-spread',
+                    '@babel/preset-env',
                     {
-                        loose: true,
-                        useBuiltIns: true
+                        modules: false,
+                        useBuiltIns: 'usage',
+                        corejs: { version: 3, proposals: true }
+                    }
+                ]
+            ],
+            plugins: [
+                [
+                    '@babel/plugin-transform-typescript',
+                    {
+                        isTSX: !!jsx,
+                        jsxPragma: jsxFactory
                     }
                 ],
-                ['@babel/plugin-proposal-class-properties', { loose: true }]
-                // use these when in need
-                // 'babel-plugin-transform-async-to-promises',
-                // ['@babel/plugin-proposal-decorators', { legacy: true }],
-                // ['@babel/plugin-transform-react-jsx', { pragma }]
-            ]
+                ['@babel/plugin-proposal-class-properties', { loose: true }],
+                !!experimentalDecorators && ['@babel/plugin-proposal-decorators', { legacy: true }],
+                !!jsx && ['@babel/plugin-transform-react-jsx', { pragma: jsxFactory }]
+            ].filter(notBoolean)
         },
         include: /src/
     },
     {
-        test: /\.(html)$/,
+        test: /\.html$/,
         loader: 'html-loader'
     },
     {
-        test: /\.scss$/,
+        test: /\.s?css$/,
         use: [
             devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
             {
@@ -67,23 +70,14 @@ const rules: webpack.RuleSetRule[] = [
                     sourceMap: true
                 }
             },
-            {
+            devMode || {
                 loader: 'postcss-loader',
-                options: {
-                    sourceMap: true,
-                    // eslint-disable-next-line @typescript-eslint/no-var-requires
-                    plugins: [require('postcss-preset-env')(), devMode || require('cssnano')()].filter(
-                        notBoolean
-                    )
-                }
-            },
-            {
-                loader: 'sass-loader',
                 options: {
                     sourceMap: true
                 }
-            }
-        ].filter(notBoolean) as (webpack.Loader | string)[]
+            },
+            'sass-loader'
+        ].filter(notBoolean)
     },
     {
         test: /\.(png|jpg|gif|svg|webp)$/,
@@ -96,10 +90,7 @@ const rules: webpack.RuleSetRule[] = [
 ]
 
 const config: webpack.Configuration = {
-    entry: {
-        main: [__dirname + '/src/main.ts', __dirname + '/src/styles.scss'],
-        polyfills: __dirname + '/src/polyfills.ts'
-    },
+    entry: [__dirname + '/src/main.ts', __dirname + '/src/styles.scss'],
     // eval source map is faster when rebuild, but make complied code
     // totally unreadable
     // use inline-cheap-module-source-map instead if needed
@@ -115,14 +106,10 @@ const config: webpack.Configuration = {
             minChunks: 2,
             cacheGroups: {
                 vendor: {
-                    test({ resource }, chunks) {
-                        const onlyByPolyfill = chunks.length === 1 && chunks[0].name === 'polyfills'
-                        return resource.include('node_modules') && !onlyByPolyfill
-                    },
+                    test: /node_modules/,
                     name: 'vendors',
                     chunks: 'all',
-                    minChunks: 1,
-                    minSize: 8192
+                    minChunks: 1
                 }
             }
         }
@@ -145,18 +132,14 @@ const config: webpack.Configuration = {
         new HtmlWebpackPlugin({
             template: 'src/index.html'
         }),
-        new ForkTsCheckerWebpackPlugin({
-            eslint: true
-        }),
         new ScriptExtHtmlWebpackPlugin({
-            defaultAttribute: 'defer',
-            sync: 'polyfills',
-            custom: {
-                test: 'polyfills',
-                attribute: 'nomodule'
-            }
+            defaultAttribute: 'defer'
         }),
         // only in dev
+        devMode &&
+            new ForkTsCheckerWebpackPlugin({
+                eslint: true
+            }),
         devMode && new HotModuleReplacementPlugin(),
         // only in prod
         devMode || new CleanWebpackPlugin(),
@@ -166,10 +149,10 @@ const config: webpack.Configuration = {
             }),
         // because why not
         devMode ||
-            new LicenseWebpackPlugin({
+            (new LicenseWebpackPlugin({
                 perChunkOutput: false
-            })
-    ].filter(notBoolean) as webpack.Plugin[]
+            }) as any)
+    ].filter(notBoolean)
 }
 
 export default config
