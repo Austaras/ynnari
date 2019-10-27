@@ -5,14 +5,10 @@ This is intended for SPAs, but may also work for other projects. It often happen
 Using Typescript, TSLint, SCSS, Webpack and yarn
 
 TODO:
-- use stable version of html-webpack-plugin
 - use incoming webpack 5
-- seperate modern and leagcy build
+- a more stable build
 
-cannot complete due to lack of knowledge:
-- consider PWA support
-- add test support
-
-currently cannot be done:
+blocked:
+- use stable version of html-webpack-plugin
 - dead code elimination in dynamic import
 - transform async correctly, blocked by [issue](https://github.com/babel/babel/pull/7076)

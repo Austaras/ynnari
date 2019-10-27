@@ -11,6 +11,11 @@ import { LicenseWebpackPlugin } from 'license-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import ScriptExtHtmlWebpackPlugin from 'script-ext-html-webpack-plugin'
 
+import { deepCopy } from '../src/utils'
+
+// maybe oneday use webpack-babel-multi-target-plugin
+import { MultiBuildPlugin } from './multi-taget'
+
 const modeArg = process.argv.filter(str => str.startsWith('--mode')).shift()
 const mode = modeArg !== undefined ? modeArg.split('=')[1].trim() : 'development'
 const devMode = mode !== 'production'
@@ -30,18 +35,8 @@ const rules: webpack.RuleSetRule[] = [
         // however it adds alot dependency, it's hardly to tell it's good or not
         loader: 'babel-loader',
         options: {
-            cacheDirectory: __dirname + '/.cache',
+            cacheDirectory: path.resolve(__dirname, '../.cache'),
             parserOpts: { strictMode: true },
-            presets: [
-                [
-                    '@babel/preset-env',
-                    {
-                        modules: false,
-                        useBuiltIns: 'usage',
-                        corejs: { version: 3, proposals: true }
-                    }
-                ]
-            ],
             plugins: [
                 [
                     '@babel/plugin-transform-typescript',
@@ -90,17 +85,63 @@ const rules: webpack.RuleSetRule[] = [
     }
 ]
 
-const modules: string[] = ['node_modules']
-if (baseUrl) modules.push(path.resolve(__dirname, baseUrl))
+const presets = [
+    [
+        '@babel/preset-env',
+        {
+            modules: false,
+            useBuiltIns: 'usage',
+            corejs: { version: 3, proposals: true }
+        }
+    ]
+]
+
+const legacyRules = deepCopy(rules)
+;(legacyRules[0]!.options as Record<string, any>).presets = presets
+
+const modules = ['node_modules']
+if (baseUrl) modules.push(path.resolve(__dirname, '..', baseUrl))
+
+const plugins = () =>
+    [
+        new HtmlWebpackPlugin({
+            template: 'src/index.html'
+        }),
+        new ScriptExtHtmlWebpackPlugin({
+            defaultAttribute: 'defer',
+            module: ['main.', 'vendor.'],
+            custom: {
+                test: 'legacy',
+                attribute: 'nomodule'
+            }
+        }),
+        // only in dev
+        devMode &&
+            new ForkTsCheckerWebpackPlugin({
+                eslint: true
+            }),
+        devMode && new HotModuleReplacementPlugin(),
+        // only in prod
+        devMode || new MultiBuildPlugin(),
+        devMode || new CleanWebpackPlugin(),
+        devMode ||
+            new MiniCssExtractPlugin({
+                chunkFilename: 'styles.[contenthash].css'
+            }),
+        devMode ||
+            (new LicenseWebpackPlugin({
+                perChunkOutput: false
+            }) as any)
+    ].filter(notBoolean)
 
 const config: webpack.Configuration = {
-    entry: [__dirname + '/src/main.ts', __dirname + '/src/styles.scss'],
+    entry: path.resolve(__dirname, '../src/main.ts'),
     // eval source map is faster when rebuild, but make complied code
     // totally unreadable
     // use inline-cheap-module-source-map instead if needed
     devtool: devMode ? 'cheap-module-eval-source-map' : 'nosources-source-map',
     output: {
-        path: __dirname + '/dist',
+        path: path.resolve(__dirname, '../dist'),
         filename: devMode ? '[name].js' : '[name].[contenthash].js'
     },
     optimization: {
@@ -132,32 +173,16 @@ const config: webpack.Configuration = {
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
         modules
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-            template: 'src/index.html'
-        }),
-        new ScriptExtHtmlWebpackPlugin({
-            defaultAttribute: 'defer'
-        }),
-        // only in dev
-        devMode &&
-            new ForkTsCheckerWebpackPlugin({
-                eslint: true
-            }),
-        devMode && new HotModuleReplacementPlugin(),
-        // only in prod
-        devMode || new CleanWebpackPlugin(),
-        devMode ||
-            new MiniCssExtractPlugin({
-                chunkFilename: 'styles.[contenthash].css'
-            }),
-        // because why not
-        devMode ||
-            (new LicenseWebpackPlugin({
-                perChunkOutput: false
-            }) as any)
-    ].filter(notBoolean)
+    }
 }
 
-export default config
+const legacyConfig = deepCopy(config)
+legacyConfig.optimization!.runtimeChunk = false
+legacyConfig.module!.rules = legacyRules
+legacyConfig.output!.filename = '[name]-legacy.[contenthash].js'
+config.plugins = plugins()
+legacyConfig.plugins = plugins().filter(plug => !(plug instanceof CleanWebpackPlugin))
+
+const result = devMode ? config : [config, legacyConfig]
+
+export default result

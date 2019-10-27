@@ -1,7 +1,7 @@
-import { foo } from '../src/app'
+import { App } from '../src/app'
 
 describe('app', () => {
     it('should work normaly', () => {
-        expect(foo).not.toThrow()
+        expect(App).not.toThrow()
     })
 })
