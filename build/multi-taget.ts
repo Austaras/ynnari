@@ -15,6 +15,13 @@ export class MultiBuildPlugin implements Plugin {
                 this.beforeAssetTag(data, cb)
             })
         })
+        compiler.hooks.emit.tap('HtmlWebpackMultiBuildPlugin', compilation => {
+            Object.keys(compilation.assets).forEach(assetName => {
+                if (assetName.includes('main.css')) {
+                    delete compilation.assets[assetName]
+                }
+            })
+        })
     }
     public beforeAssetTag(data: Data, cb: any) {
         // don't need inline fix since I don't care about edge nor safari
