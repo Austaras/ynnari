@@ -5,16 +5,14 @@
     "scripts": {
         "build": "webpack --mode='production'",
         "serve": "webpack-dev-server",
-        "test": "echo 'not implemented yet!'"
+        "test:unit": "jest --config jest.config.json"
     },
     "browserslist": [
         "last 2 major versions and >1%",
-        "not ie <= 11",
+        "not ie < 11",
         "not op_mini all"
     ],
-    "dependencies": {
-        "core-js": "^3.1.4"
-    },
+    "dependencies": {},
     "devDependencies": {
         "@babel/core": "^7.4.3",
         "@babel/plugin-proposal-class-properties": "^7.4.0",
@@ -23,12 +21,14 @@
         "@babel/plugin-transform-typescript": "^7.4.0",
         "@babel/preset-env": "^7.4.3",
         "@types/html-minifier": "^3.5.3",
+        "@types/jest": "^24.0.20",
         "@types/mini-css-extract-plugin": "^0.8.0",
         "@types/script-ext-html-webpack-plugin": "^2.1.0",
         "@types/webpack-dev-server": "^3.1.2",
         "@types/webpack-env": "^1.13.9",
         "@typescript-eslint/eslint-plugin": "^2.0.0",
         "@typescript-eslint/parser": "^2.0.0",
+        "babel-jest": "^24.9.0",
         "babel-loader": "^8.0.5",
         "clean-webpack-plugin": "^3.0.0",
         "css-loader": "^3.1.0",
@@ -39,7 +39,8 @@
         "fork-ts-checker-webpack-plugin": "^2.0.0",
         "html-loader": "^0.5.5",
         "html-webpack-plugin": "^4.0.0-beta.5",
-        "jsonc": "^2.0.0",
+        "jest": "^24.9.0",
+        "jsonc-parser": "^2.2.0",
         "license-webpack-plugin": "^2.1.1",
         "mini-css-extract-plugin": "^0.8.0",
         "node-sass": "^4.11.0",
@@ -55,6 +56,14 @@
         "webpack": "^4.29.5",
         "webpack-cli": "^3.2.3",
         "webpack-dev-server": "^3.2.0"
+    },
+    "babel": {
+        "presets": [
+            "@babel/preset-env"
+        ],
+        "plugins": [
+            "@babel/plugin-transform-typescript"
+        ]
     },
     "postcss": {
         "plugins": {

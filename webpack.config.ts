@@ -1,5 +1,6 @@
 import fs from 'fs'
-import { jsonc } from 'jsonc'
+import path from 'path'
+import { parse } from 'jsonc-parser'
 
 import webpack, { HotModuleReplacementPlugin } from 'webpack'
 
@@ -15,7 +16,7 @@ const mode = modeArg !== undefined ? modeArg.split('=')[1].trim() : 'development
 const devMode = mode !== 'production'
 // should use ts but it's damn slow
 const TSConfig = fs.readFileSync('./tsconfig.json')
-const { jsx, jsxFactory, experimentalDecorators } = jsonc.parse(TSConfig.toString()).compilerOptions
+const { baseUrl, jsx, jsxFactory, experimentalDecorators } = parse(TSConfig.toString()).compilerOptions
 
 function notBoolean<T>(i: T): i is Exclude<T, boolean> {
     return typeof i !== 'boolean'
@@ -89,6 +90,9 @@ const rules: webpack.RuleSetRule[] = [
     }
 ]
 
+const modules: string[] = ['node_modules']
+if (baseUrl) modules.push(path.resolve(__dirname, baseUrl))
+
 const config: webpack.Configuration = {
     entry: [__dirname + '/src/main.ts', __dirname + '/src/styles.scss'],
     // eval source map is faster when rebuild, but make complied code
@@ -126,7 +130,8 @@ const config: webpack.Configuration = {
     mode: devMode ? 'development' : 'production',
     module: { rules },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js']
+        extensions: ['.tsx', '.ts', '.js'],
+        modules
     },
     plugins: [
         new HtmlWebpackPlugin({
