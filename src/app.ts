@@ -1,4 +1,13 @@
-export async function App() {
+function Bar(ctor: any) {
+    return ctor
+}
+
+@Bar
+class Foo {
+    public t = 1
+}
+
+export async function App(): Promise<void> {
     await Promise.resolve()
-    console.log(1234)
+    console.log(new Foo())
 }

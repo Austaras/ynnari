@@ -4,6 +4,7 @@ import { parse } from 'jsonc-parser'
 
 import webpack, { HotModuleReplacementPlugin } from 'webpack'
 
+import { BabelMultiTargetPlugin } from 'webpack-babel-multi-target-plugin'
 import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
@@ -11,10 +12,8 @@ import { LicenseWebpackPlugin } from 'license-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import ScriptExtHtmlWebpackPlugin from 'script-ext-html-webpack-plugin'
 
-import { deepCopy } from '../src/utils'
-
 // maybe oneday use webpack-babel-multi-target-plugin
-import { MultiBuildPlugin } from './multi-taget'
+// import { MultiBuildPlugin } from './multi-taget'
 
 const modeArg = process.argv.filter(str => str.startsWith('--mode')).shift()
 const mode = modeArg !== undefined ? modeArg.split('=')[1].trim() : 'development'
@@ -33,23 +32,7 @@ const rules: webpack.RuleSetRule[] = [
         // use babel-loader because
         // 1) vue need it 2) it support browserslists 3) it's slightly faster
         // however it adds alot dependency, it's hardly to tell it's good or not
-        loader: 'babel-loader',
-        options: {
-            cacheDirectory: path.resolve(__dirname, '../.cache'),
-            parserOpts: { strictMode: true },
-            plugins: [
-                [
-                    '@babel/plugin-transform-typescript',
-                    {
-                        isTSX: !!jsx,
-                        jsxPragma: jsxFactory
-                    }
-                ],
-                ['@babel/plugin-proposal-class-properties', { loose: true }],
-                !!experimentalDecorators && ['@babel/plugin-proposal-decorators', { legacy: true }],
-                !!jsx && ['@babel/plugin-transform-react-jsx', { pragma: jsxFactory }]
-            ].filter(notBoolean)
-        },
+        use: BabelMultiTargetPlugin.loader(),
         include: /src/
     },
     {
@@ -85,54 +68,8 @@ const rules: webpack.RuleSetRule[] = [
     }
 ]
 
-const presets = [
-    [
-        '@babel/preset-env',
-        {
-            modules: false,
-            useBuiltIns: 'usage',
-            corejs: { version: 3, proposals: true }
-        }
-    ]
-]
-
-const legacyRules = deepCopy(rules)
-;(legacyRules[0]!.options as Record<string, any>).presets = presets
-
 const modules = ['node_modules']
 if (baseUrl) modules.push(path.resolve(__dirname, '..', baseUrl))
-
-const plugins = () =>
-    [
-        new HtmlWebpackPlugin({
-            template: 'src/index.html'
-        }),
-        new ScriptExtHtmlWebpackPlugin({
-            defaultAttribute: 'defer',
-            module: ['main.', 'vendor.'],
-            custom: {
-                test: 'legacy',
-                attribute: 'nomodule'
-            }
-        }),
-        // only in dev
-        devMode &&
-            new ForkTsCheckerWebpackPlugin({
-                eslint: true
-            }),
-        devMode && new HotModuleReplacementPlugin(),
-        // only in prod
-        devMode || new MultiBuildPlugin(),
-        devMode || new CleanWebpackPlugin(),
-        devMode ||
-            new MiniCssExtractPlugin({
-                chunkFilename: 'styles.[contenthash].css'
-            }),
-        devMode ||
-            (new LicenseWebpackPlugin({
-                perChunkOutput: false
-            }) as any)
-    ].filter(notBoolean)
 
 const config: webpack.Configuration = {
     entry: path.resolve(__dirname, '../src/main.ts'),
@@ -145,7 +82,7 @@ const config: webpack.Configuration = {
         filename: devMode ? '[name].js' : '[name].[contenthash].js'
     },
     optimization: {
-        runtimeChunk: 'single',
+        // runtimeChunk: 'single',
         splitChunks: {
             chunks: 'all',
             minChunks: 2,
@@ -173,16 +110,52 @@ const config: webpack.Configuration = {
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
         modules
-    }
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: 'src/index.html'
+        }),
+        new ScriptExtHtmlWebpackPlugin({
+            defaultAttribute: 'defer'
+        }),
+        new BabelMultiTargetPlugin({
+            babel: {
+                presetOptions: {
+                    corejs: { version: 3, proposals: true }
+                },
+                cacheDirectory: path.resolve(__dirname, '../.cache'),
+                plugins: [
+                    [
+                        '@babel/plugin-transform-typescript',
+                        {
+                            isTSX: !!jsx,
+                            jsxPragma: jsxFactory
+                        }
+                    ],
+                    !!experimentalDecorators && ['@babel/plugin-proposal-decorators', { legacy: true }],
+                    ['@babel/plugin-proposal-class-properties', { loose: true }],
+                    !!jsx && ['@babel/plugin-transform-react-jsx', { pragma: jsxFactory }]
+                ].filter(notBoolean) as any
+            }
+        }),
+        // only in dev
+        devMode &&
+            new ForkTsCheckerWebpackPlugin({
+                eslint: true
+            }),
+        devMode && new HotModuleReplacementPlugin(),
+        // only in prod
+        // devMode || new MultiBuildPlugin(),
+        devMode || new CleanWebpackPlugin(),
+        devMode ||
+            new MiniCssExtractPlugin({
+                filename: 'styles.[contenthash].css'
+            }),
+        devMode ||
+            (new LicenseWebpackPlugin({
+                perChunkOutput: false
+            }) as any)
+    ].filter(notBoolean)
 }
 
-const legacyConfig = deepCopy(config)
-legacyConfig.optimization!.runtimeChunk = false
-legacyConfig.module!.rules = legacyRules
-legacyConfig.output!.filename = '[name]-legacy.[contenthash].js'
-config.plugins = plugins()
-legacyConfig.plugins = plugins().filter(plug => !(plug instanceof CleanWebpackPlugin))
-
-const result = devMode ? config : [config, legacyConfig]
-
-export default result
+export default config
