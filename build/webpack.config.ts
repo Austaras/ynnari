@@ -166,12 +166,14 @@ const config: webpack.Configuration = {
         },
         historyApiFallback: true,
         clientLogLevel: 'warning',
-        hot: true
+        hot: true,
+        watchOptions: { ignored: /node_modules/ }
     },
     mode: devMode ? 'development' : 'production',
     module: { rules },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
+        mainFields: ['module', 'jsnext:main', 'esm5', 'fesm5', 'browser'],
         modules
     }
 }
