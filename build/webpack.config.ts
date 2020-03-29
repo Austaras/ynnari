@@ -1,16 +1,15 @@
-import fs from 'fs'
-import path from 'path'
-import { parse } from 'jsonc-parser'
+import { readFileSync } from 'fs'
+import { resolve } from 'path'
 
-import webpack, { HotModuleReplacementPlugin } from 'webpack'
-
-import { BabelMultiTargetPlugin } from 'webpack-babel-multi-target-plugin'
 import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
+import { parse } from 'jsonc-parser'
 import { LicenseWebpackPlugin } from 'license-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import ScriptExtHtmlWebpackPlugin from 'script-ext-html-webpack-plugin'
+import webpack, { HotModuleReplacementPlugin } from 'webpack'
+import { BabelMultiTargetPlugin } from 'webpack-babel-multi-target-plugin'
 
 // maybe oneday use webpack-babel-multi-target-plugin
 // import { MultiBuildPlugin } from './multi-taget'
@@ -19,7 +18,7 @@ const modeArg = process.argv.filter(str => str.startsWith('--mode')).shift()
 const mode = modeArg !== undefined ? modeArg.split('=')[1].trim() : 'development'
 const devMode = mode !== 'production'
 // should use ts but it's damn slow
-const TSConfig = fs.readFileSync('./tsconfig.json')
+const TSConfig = readFileSync('./tsconfig.json')
 const { baseUrl, jsx, jsxFactory, experimentalDecorators } = parse(TSConfig.toString()).compilerOptions
 
 function notBoolean<T>(i: T): i is Exclude<T, boolean> {
@@ -69,19 +68,20 @@ const rules: webpack.RuleSetRule[] = [
 ]
 
 const modules = ['node_modules']
-if (baseUrl) modules.push(path.resolve(__dirname, '..', baseUrl))
+if (baseUrl) modules.push(resolve(__dirname, '..', baseUrl))
 
 const config: webpack.Configuration = {
-    entry: path.resolve(__dirname, '../src/main.ts'),
+    entry: resolve(__dirname, '../src/main.ts'),
     // eval source map is faster when rebuild, but make complied code
     // totally unreadable
     // use inline-cheap-module-source-map instead if needed
     devtool: devMode ? 'cheap-module-eval-source-map' : 'nosources-source-map',
     output: {
-        path: path.resolve(__dirname, '../dist'),
+        path: resolve(__dirname, '../dist'),
         filename: devMode ? '[name].js' : '[name].[contenthash].js'
     },
     optimization: {
+        // TODO: https://github.com/DanielSchaffer/webpack-babel-multi-target-plugin/pull/65
         // runtimeChunk: 'single',
         splitChunks: {
             chunks: 'all',
@@ -120,20 +120,23 @@ const config: webpack.Configuration = {
         }),
         new BabelMultiTargetPlugin({
             babel: {
+                cacheDirectory: resolve(__dirname, '../.cache'),
+                presets: [
+                    [
+                        '@babel/preset-typescript',
+                        {
+                            isTSX: !!jsx,
+                            allExtensions: !!jsx,
+                            jsxPragma: jsxFactory
+                        }
+                    ]
+                ] as any,
                 presetOptions: {
                     corejs: { version: 3, proposals: true }
                 },
-                cacheDirectory: path.resolve(__dirname, '../.cache'),
                 plugins: [
-                    [
-                        '@babel/plugin-transform-typescript',
-                        {
-                            isTSX: !!jsx,
-                            jsxPragma: jsxFactory
-                        }
-                    ],
-                    !!experimentalDecorators && ['@babel/plugin-proposal-decorators', { legacy: true }],
                     ['@babel/plugin-proposal-class-properties', { loose: true }],
+                    !!experimentalDecorators && ['@babel/plugin-proposal-decorators', { legacy: true }],
                     !!jsx && ['@babel/plugin-transform-react-jsx', { pragma: jsxFactory }]
                 ].filter(notBoolean) as any
             }
@@ -141,7 +144,8 @@ const config: webpack.Configuration = {
         // only in dev
         devMode &&
             new ForkTsCheckerWebpackPlugin({
-                eslint: true
+                eslint: true,
+                reportFiles: ['src/**/*.{ts,tsx}']
             }),
         devMode && new HotModuleReplacementPlugin(),
         // only in prod

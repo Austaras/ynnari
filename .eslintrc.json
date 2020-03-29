@@ -77,11 +77,16 @@
         "spaced-comment": "warn",
         "space-in-parens": ["warn", "never"],
         "space-infix-ops": ["warn"],
+        "sort-imports": ["warn", { "ignoreDeclarationSort": true }],
+        "valid-typeof": ["error", { "requireStringLiterals": true }],
+        "import/first": "warn",
         "import/newline-after-import": "warn",
         "import/order": [
             "warn",
             {
-                "groups": [["internal", "external", "builtin"], ["index", "sibling", "parent"]],
+                "alphabetize": {
+                    "order": "asc"
+                },
                 "newlines-between": "always-and-inside-groups"
             }
         ],
