@@ -144,8 +144,9 @@ const config: webpack.Configuration = {
         // only in dev
         devMode &&
             new ForkTsCheckerWebpackPlugin({
-                eslint: true,
-                reportFiles: ['src/**/*.{ts,tsx}']
+                eslint: {
+                    files: './src/**/*.{ts,tsx,js,jsx}'
+                }
             }),
         devMode && new HotModuleReplacementPlugin(),
         // only in prod

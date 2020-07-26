@@ -85,8 +85,13 @@
             "warn",
             {
                 "alphabetize": {
-                    "order": "asc"
+                    "order": "asc",
+                    "caseInsensitive": true
                 },
+                "groups": [
+                    ["internal", "external", "builtin"],
+                    ["index", "sibling", "parent"]
+                ],
                 "newlines-between": "always-and-inside-groups"
             }
         ],
@@ -147,12 +152,22 @@
             }
         ],
         "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-floating-promises": "off",
         "@typescript-eslint/no-for-in-array": "off",
+        "@typescript-eslint/no-namespace": ["warn", { "allowDeclarations": true }],
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/no-unused-vars": "off",
         "@typescript-eslint/no-use-before-define": "off",
         "@typescript-eslint/prefer-function-type": "warn",
         "@typescript-eslint/prefer-for-of": "warn",
+        "@typescript-eslint/space-before-function-paren": [
+            "warn",
+            {
+                "anonymous": "never",
+                "named": "never",
+                "asyncArrow": "always"
+            }
+        ],
         "@typescript-eslint/type-annotation-spacing": [
             "warn",
             {
