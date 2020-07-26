@@ -81,7 +81,7 @@ const config: webpack.Configuration = {
         filename: devMode ? '[name].js' : '[name].[contenthash].js'
     },
     optimization: {
-        // TODO: https://github.com/DanielSchaffer/webpack-babel-multi-target-plugin/pull/65
+        // TODO: wait for webpack-babel-multi-target-plugin next release
         // runtimeChunk: 'single',
         splitChunks: {
             chunks: 'all',
