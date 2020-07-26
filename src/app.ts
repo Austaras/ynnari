@@ -1,4 +1,4 @@
-export async function App() {
+export async function App(): Promise<void> {
     await Promise.resolve()
-    console.log(1234)
+    console.log(123)
 }
