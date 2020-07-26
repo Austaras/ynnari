@@ -68,16 +68,16 @@ const rules: webpack.RuleSetRule[] = [
 ]
 
 const modules = ['node_modules']
-if (baseUrl) modules.push(resolve(__dirname, '..', baseUrl))
+if (baseUrl) modules.push(resolve(__dirname, baseUrl))
 
 const config: webpack.Configuration = {
-    entry: resolve(__dirname, '../src/main.ts'),
+    entry: resolve(__dirname, './src/main.ts'),
     // eval source map is faster when rebuild, but make complied code
     // totally unreadable
     // use inline-cheap-module-source-map instead if needed
     devtool: devMode ? 'cheap-module-eval-source-map' : 'nosources-source-map',
     output: {
-        path: resolve(__dirname, '../dist'),
+        path: resolve(__dirname, './dist'),
         filename: devMode ? '[name].js' : '[name].[contenthash].js'
     },
     optimization: {
@@ -99,18 +99,16 @@ const config: webpack.Configuration = {
     devServer: {
         // watch index.html changes
         before(_, server: any) {
-            server._watch(__dirname + '/src/index.html')
+            server._watch(__dirname + './src/index.html')
         },
         historyApiFallback: true,
         clientLogLevel: 'warning',
-        hot: true,
-        watchOptions: { ignored: /node_modules/ }
+        hot: true
     },
     mode: devMode ? 'development' : 'production',
     module: { rules },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
-        mainFields: ['module', 'jsnext:main', 'esm5', 'fesm5', 'browser'],
         modules
     },
     plugins: [
@@ -122,7 +120,7 @@ const config: webpack.Configuration = {
         }),
         new BabelMultiTargetPlugin({
             babel: {
-                cacheDirectory: resolve(__dirname, '../.cache'),
+                cacheDirectory: resolve(__dirname, './.cache'),
                 presets: [
                     [
                         '@babel/preset-typescript',
