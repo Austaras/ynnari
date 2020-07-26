@@ -102,6 +102,7 @@
             "warn",
             { "assertionStyle": "as", "objectLiteralTypeAssertions": "allow-as-parameter" }
         ],
+        "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/explicit-member-accessibility": [
             "warn",
@@ -156,6 +157,10 @@
         "@typescript-eslint/no-for-in-array": "off",
         "@typescript-eslint/no-namespace": ["warn", { "allowDeclarations": true }],
         "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-unsafe-assignment" : "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unsafe-return": "off",
         "@typescript-eslint/no-unused-vars": "off",
         "@typescript-eslint/no-use-before-define": "off",
         "@typescript-eslint/prefer-function-type": "warn",
