@@ -96,7 +96,8 @@
             }
         ],
         "@typescript-eslint/array-type": "off",
-        "@typescript-eslint/ban-ts-ignore": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/ban-types": "warn",
         "@typescript-eslint/consistent-type-definitions": ["warn", "interface"],
         "@typescript-eslint/consistent-type-assertions": [
             "warn",
@@ -165,6 +166,11 @@
         "@typescript-eslint/no-use-before-define": "off",
         "@typescript-eslint/prefer-function-type": "warn",
         "@typescript-eslint/prefer-for-of": "warn",
+        "@typescript-eslint/restrict-plus-operands": "off",
+        "@typescript-eslint/restrict-template-expressions": ["warn",{
+            "allowAny": true,
+            "allowNullish": true
+        }],
         "@typescript-eslint/space-before-function-paren": [
             "warn",
             {

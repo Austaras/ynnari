@@ -41,12 +41,7 @@ const rules: webpack.RuleSetRule[] = [
         test: /\.s?css$/,
         use: [
             devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-            {
-                loader: 'css-loader',
-                options: {
-                    sourceMap: true
-                }
-            },
+            'css-loader',
             devMode || {
                 loader: 'postcss-loader',
                 options: {
