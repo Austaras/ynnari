@@ -42,12 +42,7 @@ const rules: webpack.RuleSetRule[] = [
         use: [
             devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
             'css-loader',
-            devMode || {
-                loader: 'postcss-loader',
-                options: {
-                    sourceMap: true
-                }
-            },
+            devMode || 'postcss-loader',
             'sass-loader'
         ].filter(notBoolean)
     },
