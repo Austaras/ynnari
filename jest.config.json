@@ -9,6 +9,6 @@
     "moduleDirectories": ["node_modules", "src"],
     "testMatch": ["**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"],
     "coverageReporters": ["cobertura"],
-    "coveragePathIgnorePatterns": ["test", "node_modules", ".d.ts"],
+    "collectCoverageFrom": ["src/**/*.(js|jsx|ts|tsx)"],
     "moduleFileExtensions": ["js", "jsx", "json", "ts", "tsx"]
 }

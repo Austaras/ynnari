@@ -3,15 +3,12 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import { readFileSync } from 'fs'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { parse } from 'jsonc-parser'
-import { LicenseWebpackPlugin } from 'license-webpack-plugin'
+// import { LicenseWebpackPlugin } from 'license-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { resolve } from 'path'
-import ScriptExtHtmlWebpackPlugin from 'script-ext-html-webpack-plugin'
+// import ScriptExtHtmlWebpackPlugin from 'script-ext-html-webpack-plugin'
 import webpack, { HotModuleReplacementPlugin } from 'webpack'
 import { BabelMultiTargetPlugin } from 'webpack-babel-multi-target-plugin'
-
-// maybe oneday use webpack-babel-multi-target-plugin
-// import { MultiBuildPlugin } from './multi-taget'
 
 const modeArg = process.argv.filter(str => str.startsWith('--mode')).shift()
 const mode = modeArg !== undefined ? modeArg.split('=')[1].trim() : 'development'
@@ -42,7 +39,14 @@ const rules: webpack.RuleSetRule[] = [
         use: [
             devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
             'css-loader',
-            devMode || 'postcss-loader',
+            devMode || {
+                loader: 'postcss-loader',
+                options: {
+                    postcssOptions: {
+                        plugins: ['postcss-preset-env', 'cssnano']
+                    }
+                }
+            },
             'sass-loader'
         ].filter(notBoolean)
     },
@@ -64,14 +68,13 @@ const config: webpack.Configuration = {
     // eval source map is faster when rebuild, but make complied code
     // totally unreadable
     // use inline-cheap-module-source-map instead if needed
-    devtool: devMode ? 'cheap-module-eval-source-map' : 'nosources-source-map',
+    devtool: devMode ? 'eval-cheap-module-source-map' : 'nosources-source-map',
     output: {
         path: resolve(__dirname, './dist'),
         filename: devMode ? '[name].js' : '[name].[contenthash].js'
     },
     optimization: {
-        // TODO: wait for webpack-babel-multi-target-plugin next release
-        // runtimeChunk: 'single',
+        runtimeChunk: 'single',
         splitChunks: {
             chunks: 'all',
             minChunks: 2,
@@ -102,10 +105,8 @@ const config: webpack.Configuration = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'src/index.html'
-        }),
-        new ScriptExtHtmlWebpackPlugin({
-            defaultAttribute: 'defer'
+            template: 'src/index.html',
+            inject: 'body'
         }),
         new BabelMultiTargetPlugin({
             babel: {
@@ -142,13 +143,13 @@ const config: webpack.Configuration = {
         // devMode || new MultiBuildPlugin(),
         devMode || new CleanWebpackPlugin(),
         devMode ||
-            new MiniCssExtractPlugin({
+            (new MiniCssExtractPlugin({
                 filename: 'styles.[contenthash].css'
-            }),
-        devMode ||
-            (new LicenseWebpackPlugin({
-                perChunkOutput: false
             }) as any)
+        // devMode ||
+        //     (new LicenseWebpackPlugin({
+        //         perChunkOutput: false
+        //     }) as any)
     ].filter(notBoolean)
 }
 
