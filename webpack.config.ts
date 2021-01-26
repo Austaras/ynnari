@@ -3,10 +3,9 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import { readFileSync } from 'fs'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { parse } from 'jsonc-parser'
-// import { LicenseWebpackPlugin } from 'license-webpack-plugin'
+import { LicenseWebpackPlugin } from 'license-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { resolve } from 'path'
-// import ScriptExtHtmlWebpackPlugin from 'script-ext-html-webpack-plugin'
 import webpack, { HotModuleReplacementPlugin } from 'webpack'
 import { BabelMultiTargetPlugin } from 'webpack-babel-multi-target-plugin'
 
@@ -89,13 +88,8 @@ const config: webpack.Configuration = {
         }
     },
     devServer: {
-        // watch index.html changes
-        before(_, server: any) {
-            server._watch(__dirname + './src/index.html')
-        },
         historyApiFallback: true,
-        clientLogLevel: 'warning',
-        hot: true
+        liveReload: false
     },
     mode: devMode ? 'development' : 'production',
     module: { rules },
@@ -105,7 +99,7 @@ const config: webpack.Configuration = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'src/index.html',
+            template: 'src/assets/index.html',
             inject: 'body'
         }),
         new BabelMultiTargetPlugin({
@@ -143,13 +137,13 @@ const config: webpack.Configuration = {
         // devMode || new MultiBuildPlugin(),
         devMode || new CleanWebpackPlugin(),
         devMode ||
-            (new MiniCssExtractPlugin({
+            new MiniCssExtractPlugin({
                 filename: 'styles.[contenthash].css'
+            }),
+        devMode ||
+            (new LicenseWebpackPlugin({
+                perChunkOutput: false
             }) as any)
-        // devMode ||
-        //     (new LicenseWebpackPlugin({
-        //         perChunkOutput: false
-        //     }) as any)
     ].filter(notBoolean)
 }
 

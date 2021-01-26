@@ -2,6 +2,3 @@ node_modules
 .cache
 coverage
 dist
-
-src/assets/*
-!src/assets/.gitkeep
