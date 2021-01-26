@@ -23,60 +23,26 @@
     "plugins": ["@typescript-eslint"],
     "rules": {
         "arrow-body-style": ["warn", "as-needed"],
-        "array-bracket-spacing": ["warn", "never"],
-        "comma-spacing": "warn",
         "curly": ["warn", "multi-line"],
         "dot-notation": "warn",
-        "eol-last": "warn",
         "eqeqeq": "warn",
-        "key-spacing": "warn",
         "max-len": [
             "warn",
             {
                 "code": 110
             }
         ],
-        "new-parens": "warn",
         "no-console": "off",
         "no-caller": "warn",
         "no-eval": "warn",
-        "no-multi-spaces": "warn",
-        "no-multiple-empty-lines": [
-            "warn",
-            {
-                "max": 1,
-                "maxEOF": 0
-            }
-        ],
         "no-new-wrappers": "warn",
         "no-throw-literal": "warn",
-        "no-trailing-spaces": "warn",
         "no-var": "warn",
         "no-undef-init": "warn",
         "no-unused-expressions": "warn",
         "object-shorthand": "warn",
-        "quotes": [
-            "warn",
-            "single",
-            {
-                "avoidEscape": true,
-                "allowTemplateLiterals": true
-            }
-        ],
-        "quote-props": ["warn", "as-needed"],
         "radix": "warn",
-        "semi": ["warn", "never"],
-        "space-before-function-paren": [
-            "warn",
-            {
-                "anonymous": "never",
-                "named": "never",
-                "asyncArrow": "always"
-            }
-        ],
         "spaced-comment": "warn",
-        "space-in-parens": ["warn", "never"],
-        "space-infix-ops": ["warn"],
         "sort-imports": ["warn", { "ignoreDeclarationSort": true }],
         "valid-typeof": ["error", { "requireStringLiterals": true }],
         "import/first": "warn",
@@ -158,7 +124,7 @@
         "@typescript-eslint/no-for-in-array": "off",
         "@typescript-eslint/no-namespace": ["warn", { "allowDeclarations": true }],
         "@typescript-eslint/no-non-null-assertion": "off",
-        "@typescript-eslint/no-unsafe-assignment" : "off",
+        "@typescript-eslint/no-unsafe-assignment": "off",
         "@typescript-eslint/no-unsafe-call": "off",
         "@typescript-eslint/no-unsafe-member-access": "off",
         "@typescript-eslint/no-unsafe-return": "off",
@@ -167,29 +133,11 @@
         "@typescript-eslint/prefer-function-type": "warn",
         "@typescript-eslint/prefer-for-of": "warn",
         "@typescript-eslint/restrict-plus-operands": "off",
-        "@typescript-eslint/restrict-template-expressions": ["warn",{
-            "allowAny": true,
-            "allowNullish": true
-        }],
-        "@typescript-eslint/space-before-function-paren": [
+        "@typescript-eslint/restrict-template-expressions": [
             "warn",
             {
-                "anonymous": "never",
-                "named": "never",
-                "asyncArrow": "always"
-            }
-        ],
-        "@typescript-eslint/type-annotation-spacing": [
-            "warn",
-            {
-                "before": false,
-                "after": true,
-                "overrides": {
-                    "arrow": {
-                        "before": true,
-                        "after": true
-                    }
-                }
+                "allowAny": true,
+                "allowNullish": true
             }
         ],
         "@typescript-eslint/unified-signatures": "warn"
