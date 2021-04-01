@@ -7,7 +7,6 @@ import { LicenseWebpackPlugin } from 'license-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { resolve } from 'path'
 import webpack, { HotModuleReplacementPlugin } from 'webpack'
-import { BabelMultiTargetPlugin } from 'webpack-babel-multi-target-plugin'
 
 const modeArg = process.argv.filter(str => str.startsWith('--mode')).shift()
 const mode = modeArg !== undefined ? modeArg.split('=')[1].trim() : 'development'
@@ -23,10 +22,43 @@ function notBoolean<T>(i: T): i is Exclude<T, boolean> {
 const rules: webpack.RuleSetRule[] = [
     {
         test: /\.tsx?$/,
-        // use babel-loader because
-        // 1) vue need it 2) it support browserslists 3) it's slightly faster
-        // however it adds alot dependency, it's hardly to tell it's good or not
-        use: BabelMultiTargetPlugin.loader(),
+        use: {
+            loader: 'babel-loader',
+            options: {
+                cacheDirectory: resolve(__dirname, './.cache'),
+                presets: [
+                    [
+                        '@babel/preset-env',
+                        {
+                            loose: true,
+                            useBuiltIns: 'usage',
+                            corejs: { version: '3', proposals: true },
+                            shippedProposals: true
+                        }
+                    ],
+                    [
+                        '@babel/preset-typescript',
+                        {
+                            isTSX: !!jsx,
+                            allExtensions: !!jsx,
+                            jsxPragma: jsxFactory,
+                            onlyRemoveTypeImports: true
+                        }
+                    ],
+                    [
+                        '@babel/preset-react',
+                        {
+                            runtime: 'automatic',
+                            development: devMode,
+                            importSource: 'custom-jsx-library'
+                        }
+                    ]
+                ].filter(notBoolean),
+                plugins: [
+                    !!experimentalDecorators && ['@babel/plugin-proposal-decorators', { legacy: true }]
+                ].filter(notBoolean)
+            }
+        },
         include: /src/
     },
     {
@@ -50,11 +82,12 @@ const rules: webpack.RuleSetRule[] = [
         ].filter(notBoolean)
     },
     {
-        test: /\.(png|jpg|gif|svg|webp)$/,
-        loader: 'url-loader',
-        options: {
-            name: devMode ? '[name].[ext]' : 'assets/[name].[ext]?[hash]',
-            limit: 1025
+        test: /\.(png|jpg|gif|svg|webp|avif)$/,
+        type: 'asset/resource',
+        parser: {
+            dataUrlCondition: {
+                maxSize: 1024
+            }
         }
     }
 ]
@@ -70,7 +103,8 @@ const config: webpack.Configuration = {
     devtool: devMode ? 'eval-cheap-module-source-map' : 'nosources-source-map',
     output: {
         path: resolve(__dirname, './dist'),
-        filename: devMode ? '[name].js' : '[name].[contenthash].js'
+        filename: devMode ? '[name].js' : '[name].[contenthash].js',
+        assetModuleFilename: devMode ? '[name].[ext]' : 'assets/[name].[ext]?[hash]'
     },
     optimization: {
         runtimeChunk: 'single',
@@ -94,36 +128,13 @@ const config: webpack.Configuration = {
     mode: devMode ? 'development' : 'production',
     module: { rules },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js'],
+        extensions: ['.tsx', '.ts', '.jsx', '.js', '.mjs'],
         modules
     },
     plugins: [
         new HtmlWebpackPlugin({
             template: 'src/assets/index.html',
             inject: 'body'
-        }),
-        new BabelMultiTargetPlugin({
-            babel: {
-                cacheDirectory: resolve(__dirname, './.cache'),
-                presets: [
-                    [
-                        '@babel/preset-typescript',
-                        {
-                            isTSX: !!jsx,
-                            allExtensions: !!jsx,
-                            jsxPragma: jsxFactory
-                        }
-                    ]
-                ] as any,
-                presetOptions: {
-                    corejs: { version: 3, proposals: true }
-                },
-                plugins: [
-                    ['@babel/plugin-proposal-class-properties', { loose: true }],
-                    !!experimentalDecorators && ['@babel/plugin-proposal-decorators', { legacy: true }],
-                    !!jsx && ['@babel/plugin-transform-react-jsx', { pragma: jsxFactory }]
-                ].filter(notBoolean) as any
-            }
         }),
         // only in dev
         devMode &&
