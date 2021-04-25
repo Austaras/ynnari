@@ -21,7 +21,7 @@
         "./dist"
     ],
     "bin": {
-        "build": "./dist/build.js",
+        "ynnari-build": "./dist/ynnari-build.js",
         "ynnari-serve": "./dist/ynnari-serve.js"
     },
     "dependencies": {
