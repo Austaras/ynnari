@@ -1,13 +1,13 @@
 {
     "name": "@wicke/ynnari",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "author": {
         "name": "Austaras",
         "email": "austaras@outlook.com"
     },
     "license": "MIT",
     "scripts": {
-        "build": "tsc",
+        "build": "rm -r ./dist && tsc",
         "test:unit": "jest"
     },
     "browserslist": [
