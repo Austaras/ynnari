@@ -1,19 +1,10 @@
 #!/usr/bin/env node
 import { existsSync } from 'fs'
-import { resolve } from 'path'
 import webpack from 'webpack'
 
-import { appPath } from './path'
+import { overriderWebpack } from './override'
 
-import internalConfig from './webpack.config'
-
-let config = internalConfig
-
-const customPath = resolve(appPath, './extra-webpack.config')
-
-if (existsSync(customPath)) {
-    config = require(customPath)
-}
+const config = overriderWebpack()
 
 webpack(config, (err, stats) => {
     if (err) {
