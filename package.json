@@ -1,6 +1,6 @@
 {
     "name": "@wicke/ynnari",
-    "version": "0.0.7",
+    "version": "0.0.10",
     "author": {
         "name": "Austaras",
         "email": "austaras@outlook.com"
@@ -21,8 +21,8 @@
         "./dist"
     ],
     "bin": {
-        "ynnari-build": "./dist/ynnari-build.js",
-        "ynnari-serve": "./dist/ynnari-serve.js"
+        "ynnari-build": "./dist/src/ynnari-build.js",
+        "ynnari-serve": "./dist/src/ynnari-serve.js"
     },
     "dependencies": {
         "@babel/core": "^7.4.3",
