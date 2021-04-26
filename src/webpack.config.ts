@@ -6,9 +6,8 @@ import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { parse } from 'jsonc-parser'
 import { LicenseWebpackPlugin } from 'license-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-
 import { resolve } from 'path'
-import webpack, { HotModuleReplacementPlugin } from 'webpack'
+import webpack, { DefinePlugin, HotModuleReplacementPlugin } from 'webpack'
 
 import { appPath } from './path'
 
@@ -16,7 +15,7 @@ const modeArg = process.argv.filter(str => str.startsWith('--mode')).shift()
 const mode = modeArg !== undefined ? modeArg.split('=')[1].trim() : 'development'
 const devMode = mode !== 'production'
 // should use ts but it's damn slow
-const TSConfig = readFileSync('./tsconfig.json')
+const TSConfig = readFileSync(resolve(appPath, './tsconfig.json'))
 const { baseUrl, experimentalDecorators } = parse(TSConfig.toString()).compilerOptions
 
 function notBoolean<T>(i: T): i is Exclude<T, boolean> {
@@ -72,7 +71,7 @@ const babelLoader: webpack.RuleSetUseItem = {
                     development: devMode
                 }
             ]
-        ].filter(notBoolean),
+        ],
         plugins: [
             !!experimentalDecorators && ['@babel/plugin-proposal-decorators', { legacy: true }],
             devMode && 'react-refresh/babel'
@@ -204,6 +203,13 @@ const config: webpack.Configuration = {
         new HtmlWebpackPlugin({
             template: 'asset/index.html',
             inject: 'body'
+        }),
+        new DefinePlugin({
+            process: {
+                env: {
+                    DEV: devMode
+                }
+            }
         }),
         // only in dev
         devMode &&
