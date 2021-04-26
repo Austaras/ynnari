@@ -1,10 +1,22 @@
 #!/usr/bin/env node
+import { existsSync } from 'fs'
+import { resolve } from 'path'
 import webpack from 'webpack'
 
-import config from './webpack.config'
+import { appPath } from './path'
+
+import internalConfig from './webpack.config'
+
+let config = internalConfig
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const WebpackDevServer = require('webpack-dev-server/lib/Server')
+
+const customPath = resolve(appPath, './extra-webpack.config')
+
+if (existsSync(customPath)) {
+    config = require(customPath)
+}
 
 const compiler = webpack(config)
 

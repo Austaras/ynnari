@@ -13,7 +13,7 @@ import { appPath } from './path'
 
 const modeArg = process.argv.filter(str => str.startsWith('--mode')).shift()
 const mode = modeArg !== undefined ? modeArg.split('=')[1].trim() : 'development'
-const devMode = mode !== 'production'
+export const devMode = mode !== 'production'
 // should use ts but it's damn slow
 const TSConfig = readFileSync(resolve(appPath, './tsconfig.json'))
 const { baseUrl, experimentalDecorators } = parse(TSConfig.toString()).compilerOptions
