@@ -14,4 +14,4 @@ const compiler = webpack(config)
 
 const server = new WebpackDevServer(compiler, config.devServer)
 
-server.listen(config.devServer!.port ?? 8080, config.devServer!.host ?? '127.0.0.1', () => {})
+server.listen(config.devServer!.port ?? 8080, config.devServer!.host ?? 'localhost', () => {})
