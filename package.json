@@ -1,21 +1,16 @@
 {
     "name": "@wicke/ynnari",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "author": {
         "name": "Austaras",
         "email": "austaras@outlook.com"
     },
     "license": "MIT",
+    "keywords": ["react", "cli"],
     "scripts": {
         "build": "rm -r ./dist && tsc",
         "test:unit": "jest"
     },
-    "browserslist": [
-        "last 2 major versions and >1%",
-        "not dead",
-        "not op_mini all",
-        "not ie<11"
-    ],
     "main": "./dist/index.js",
     "files": [
         "./dist"

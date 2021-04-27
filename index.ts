@@ -1,3 +1,3 @@
-import WebpackConfig from './src/webpack.config'
+import WebpackConfig, { devMode } from './src/webpack.config'
 
-export { WebpackConfig }
+export { WebpackConfig, devMode }
