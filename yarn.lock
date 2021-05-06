@@ -1288,7 +1288,7 @@
   resolved "https://registry.yarnpkg.com/@swc/core-win32-x64-msvc/-/core-win32-x64-msvc-1.2.54.tgz#50f8c7c2f163852c4b42f4288106477aaeff0ea0"
   integrity sha512-RBtB1dzbz1ytV5LLxD9wzdGRWxBZFUapFN/RgsH1nJKZFg4kvrvsvfPU2HymNtoOWnfpYuhgapQi+ySQpUL/gg==
 
-"@swc/core@^1.1.48", "@swc/core@^1.2.54":
+"@swc/core@^1.2.52", "@swc/core@^1.2.54":
   version "1.2.54"
   resolved "https://registry.yarnpkg.com/@swc/core/-/core-1.2.54.tgz#edd25e94d57c9b3c596272ac3dc9e222aeff9905"
   integrity sha512-FNBpdRqtkSUV7E0i8C4iDiq29yLmOaP76GS7wuUGOT3txhvstGbr+L7PXzLc+QWczl21aS5V86MYBRg/aX5biw==
@@ -2818,7 +2818,7 @@ css-has-pseudo@^0.10.0:
     postcss "^7.0.6"
     postcss-selector-parser "^5.0.0-rc.4"
 
-css-loader@^5.0.1:
+css-loader@^5.2.4:
   version "5.2.4"
   resolved "https://registry.yarnpkg.com/css-loader/-/css-loader-5.2.4.tgz#e985dcbce339812cb6104ef3670f08f9893a1536"
   integrity sha512-OFYGyINCKkdQsTrSYxzGSFnGS4gNjcXkKkQgWxK138jgnPt+lepxdjSZNc8sHAl5vP3DhsJUxufWIjOwI8PMMw==
@@ -6899,10 +6899,19 @@ postcss@^7.0.14, postcss@^7.0.17, postcss@^7.0.2, postcss@^7.0.32, postcss@^7.0.
     source-map "^0.6.1"
     supports-color "^6.1.0"
 
-postcss@^8.1.4, postcss@^8.2.10:
+postcss@^8.2.10:
   version "8.2.12"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.2.12.tgz#81248a1a87e0f575cc594a99a08207fd1c4addc4"
   integrity sha512-BJnGT5+0q2tzvs6oQfnY2NpEJ7rIXNfBnZtQOKCIsweeWXBXeDd5k31UgTdS3d/c02ouspufn37mTaHWkJyzMQ==
+  dependencies:
+    colorette "^1.2.2"
+    nanoid "^3.1.22"
+    source-map "^0.6.1"
+
+postcss@^8.2.14:
+  version "8.2.14"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.2.14.tgz#dcf313eb8247b3ce8078d048c0e8262ca565ad2b"
+  integrity sha512-+jD0ZijcvyCqPQo/m/CW0UcARpdFylq04of+Q7RKX6f/Tu+dvpUI/9Sp81+i6/vJThnOBX09Quw0ZLOVwpzX3w==
   dependencies:
     colorette "^1.2.2"
     nanoid "^3.1.22"
@@ -7971,12 +7980,12 @@ svgo@^2.3.0:
     csso "^4.2.0"
     stable "^0.1.8"
 
-swc-loader@^0.1.12:
-  version "0.1.13"
-  resolved "https://registry.yarnpkg.com/swc-loader/-/swc-loader-0.1.13.tgz#26826951aae2fef1ad7eeeb1ee2e6b8e575fdd0a"
-  integrity sha512-ikN0lCbL/YvX7nqoEuS3G3B1N2GiKmuzyiybJ/Twbni/pOorzKEme4Jr2BjOnCXpKKsim6I3yuRnmKw9TdPY5Q==
+swc-loader@^0.1.13:
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/swc-loader/-/swc-loader-0.1.14.tgz#822f45e5cad45137da8f8ac7f54861baf8caefb8"
+  integrity sha512-JNSnwWj2EK5tbSWHELcYe8sJVQEHoezLYZRwRTW6HcelsLgsy+i4V1HFW8x1tcfZLvWyyTyompeVUuwpVudtTQ==
   dependencies:
-    "@swc/core" "^1.1.48"
+    "@swc/core" "^1.2.52"
     loader-utils "^2.0.0"
 
 symbol-tree@^3.2.4:
