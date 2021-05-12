@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import { existsSync } from 'fs'
 import webpack from 'webpack'
 
 import { overriderWebpack } from './override'

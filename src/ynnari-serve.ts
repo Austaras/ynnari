@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-import { existsSync } from 'fs'
-import { resolve } from 'path'
 import webpack from 'webpack'
 
 import { overriderWebpack } from './override'
@@ -14,4 +12,4 @@ const compiler = webpack(config)
 
 const server = new WebpackDevServer(compiler, config.devServer)
 
-server.listen(config.devServer!.port ?? 8080, config.devServer!.host ?? 'localhost', () => {})
+server.listen(config.devServer!.port, config.devServer!.host ?? 'localhost', () => {})

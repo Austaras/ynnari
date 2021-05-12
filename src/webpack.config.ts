@@ -219,7 +219,7 @@ const config: webpack.Configuration = {
                 }
             }),
         devMode && new HotModuleReplacementPlugin(),
-        devMode && new ReactRefreshWebpackPlugin({ esModule: true }),
+        devMode && new ReactRefreshWebpackPlugin({ esModule: true, overlay: { sockProtocol: 'ws' } }),
         // only in prod
         // devMode || new MultiBuildPlugin(),
         devMode || new CleanWebpackPlugin(),
