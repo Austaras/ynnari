@@ -1,5 +1,4 @@
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
-import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import { readFileSync } from 'fs'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
@@ -167,6 +166,7 @@ const config: webpack.Configuration = {
     // use inline-cheap-module-source-map instead if needed
     devtool: devMode ? 'eval-cheap-module-source-map' : 'nosources-source-map',
     output: {
+        clean: true,
         path: resolve(appPath, './dist'),
         filename: devMode ? '[name].js' : '[name].[contenthash].js',
         assetModuleFilename: devMode ? '[name].[ext]' : 'asset/[name].[ext]?[hash]'
@@ -188,8 +188,14 @@ const config: webpack.Configuration = {
     },
     devServer: {
         historyApiFallback: true,
-        liveReload: false
-    },
+        liveReload: false,
+        client: {
+            overlay: {
+                warnings: false,
+                errors: true
+            }
+        }
+    } as any,
     mode: devMode ? 'development' : 'production',
     module: { rules },
     resolve: {
@@ -221,8 +227,6 @@ const config: webpack.Configuration = {
         devMode && new HotModuleReplacementPlugin(),
         devMode && new ReactRefreshWebpackPlugin({ esModule: true, overlay: { sockProtocol: 'ws' } }),
         // only in prod
-        // devMode || new MultiBuildPlugin(),
-        devMode || new CleanWebpackPlugin(),
         devMode ||
             new MiniCssExtractPlugin({
                 filename: 'styles.[contenthash].css'
