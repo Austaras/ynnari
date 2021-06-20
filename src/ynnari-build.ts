@@ -7,8 +7,7 @@ const config = overriderWebpack()
 
 webpack(config, (err, stats) => {
     if (err) {
-        console.error(err)
-        return
+        throw err
     }
 
     console.log(

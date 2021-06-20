@@ -15,73 +15,37 @@ const mode = modeArg !== undefined ? modeArg.split('=')[1].trim() : 'development
 export const devMode = mode !== 'production'
 // should use ts but it's damn slow
 const TSConfig = readFileSync(resolve(appPath, './tsconfig.json'))
-const { baseUrl, experimentalDecorators } = parse(TSConfig.toString()).compilerOptions
+const { baseUrl, experimentalDecorators, emitDecoratorMetadata } = parse(TSConfig.toString()).compilerOptions
 
 function notBoolean<T>(i: T): i is Exclude<T, boolean> {
     return typeof i !== 'boolean'
 }
 
-const swcLoader: webpack.RuleSetUseItem = {
-    loader: 'swc-loader',
-    options: {
-        jsc: {
-            parser: {
-                syntax: 'typescript',
-                tsx: true,
-                dynamicImport: true
-            },
-            loose: true,
-            transform: {
-                react: {
-                    runtime: 'automatic',
-                    refresh: devMode
-                }
-            }
-        }
-    }
-}
-
-const babelLoader: webpack.RuleSetUseItem = {
-    loader: 'babel-loader',
-    options: {
-        cacheDirectory: resolve(appPath, './.cache'),
-        presets: [
-            [
-                '@babel/preset-env',
-                {
-                    loose: true,
-                    useBuiltIns: 'usage',
-                    corejs: { version: '3', proposals: true },
-                    shippedProposals: true
-                }
-            ],
-            [
-                '@babel/preset-typescript',
-                {
-                    isTSX: true,
-                    allExtensions: true,
-                    onlyRemoveTypeImports: true
-                }
-            ],
-            [
-                '@babel/preset-react',
-                {
-                    runtime: 'automatic',
-                    development: devMode
-                }
-            ]
-        ],
-        plugins: [
-            !!experimentalDecorators && ['@babel/plugin-proposal-decorators', { legacy: true }],
-            devMode && 'react-refresh/babel'
-        ].filter(notBoolean)
-    }
-}
-
 const rules: webpack.RuleSetRule[] = [
     {
         test: /\.(j|t)sx?$/,
-        use: devMode ? swcLoader : babelLoader,
+        use: {
+            loader: 'swc-loader',
+            options: {
+                jsc: {
+                    parser: {
+                        syntax: 'typescript',
+                        tsx: true,
+                        dynamicImport: true,
+                        decorators: experimentalDecorators
+                    },
+                    loose: true,
+                    transform: {
+                        legacyDecorator: experimentalDecorators,
+                        decoratorMetadata: emitDecoratorMetadata,
+                        react: {
+                            runtime: 'automatic',
+                            refresh: devMode
+                        }
+                    }
+                }
+            }
+        },
         include: /src/
     },
     {

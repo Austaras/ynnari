@@ -7,11 +7,24 @@
     ],
     "extends": [
         "eslint:recommended",
+        "plugin:jsx-a11y/recommended",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended",
         "plugin:import/warnings",
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking"
     ],
+    "settings": {
+        "react": {
+            "version": "detect"
+        },
+        "linkComponents": [
+            // Components used as alternatives to <a> for linking, eg. <Link to={ url } />
+            "Hyperlink",
+            { "name": "Link", "linkAttribute": "to" }
+        ]
+    },
     "parserOptions": {
         "project": "./tsconfig.json",
         "ecmaVersion": 10,
@@ -25,13 +38,15 @@
         "arrow-body-style": ["warn", "as-needed"],
         "curly": ["warn", "multi-line"],
         "dot-notation": "warn",
-        "eqeqeq": "warn",
+        "no-empty": ["warn", { "allowEmptyCatch": true }],
+        "eqeqeq": ["warn", "smart"],
         "max-len": [
             "warn",
             {
-                "code": 110
+                "code": 140
             }
         ],
+        "react/display-name":"off",
         "no-console": "off",
         "no-caller": "warn",
         "no-eval": "warn",
@@ -54,11 +69,24 @@
                     "order": "asc",
                     "caseInsensitive": true
                 },
-                "groups": [
-                    ["internal", "external", "builtin"],
-                    ["index", "sibling", "parent"]
+                "pathGroups": [
+                    { "pattern": "@/**", "group": "internal", "position": "before" },
+                    { "pattern": "@!(/)**", "group": "external" }
                 ],
+                "groups": [
+                    ["external", "builtin"],
+                    ["internal", "index", "sibling", "parent"]
+                ],
+                "pathGroupsExcludedImportTypes": ["builtin"],
                 "newlines-between": "always-and-inside-groups"
+            }
+        ],
+        "react/react-in-jsx-scope": "off",
+        "react/self-closing-comp": [
+            "warn",
+            {
+                "component": true,
+                "html": false
             }
         ],
         "@typescript-eslint/array-type": "off",
@@ -89,7 +117,7 @@
                     "requireLast": false
                 },
                 "singleline": {
-                    "delimiter": "comma",
+                    "delimiter": "semi",
                     "requireLast": false
                 }
             }
