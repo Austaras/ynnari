@@ -55,23 +55,7 @@ const rules: webpack.RuleSetRule[] = [
     {
         test: /\.s?css$/,
         use: [
-            devMode
-                ? {
-                      loader: 'style-loader',
-                      options: {
-                          modules: {
-                              namedExport: true
-                          }
-                      }
-                  }
-                : {
-                      loader: MiniCssExtractPlugin.loader,
-                      options: {
-                          modules: {
-                              namedExport: true
-                          }
-                      }
-                  },
+            devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
             {
                 loader: 'css-loader',
                 options: {
@@ -102,7 +86,18 @@ const rules: webpack.RuleSetRule[] = [
                 loader: 'postcss-loader',
                 options: {
                     postcssOptions: {
-                        plugins: ['postcss-preset-env', 'cssnano']
+                        plugins: [
+                            [
+                                'postcss-preset-env',
+                                {
+                                    autoprefixer: {
+                                        flexbox: 'no-2009'
+                                    },
+                                    stage: 3
+                                }
+                            ],
+                            'cssnano'
+                        ]
                     }
                 }
             },
@@ -135,6 +130,7 @@ const config: webpack.Configuration = {
         filename: devMode ? '[name].js' : '[name].[contenthash].js',
         assetModuleFilename: devMode ? '[name].[ext]' : 'asset/[name].[ext]?[hash]'
     },
+    cache: devMode ? { type: 'memory' } : { cacheDirectory: resolve(appPath, '.cache'), type: 'filesystem' },
     optimization: {
         runtimeChunk: 'single',
         splitChunks: {
