@@ -6,7 +6,7 @@ import { parse } from 'jsonc-parser'
 import { LicenseWebpackPlugin } from 'license-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { resolve } from 'path'
-import webpack, { DefinePlugin, HotModuleReplacementPlugin } from 'webpack'
+import webpack, { DefinePlugin } from 'webpack'
 
 import { appPath } from './path'
 
@@ -27,6 +27,7 @@ const rules: webpack.RuleSetRule[] = [
         use: {
             loader: 'swc-loader',
             options: {
+                env: { coreJs: 3, mode: 'usage' },
                 jsc: {
                     parser: {
                         syntax: 'typescript',
@@ -70,7 +71,18 @@ const rules: webpack.RuleSetRule[] = [
                 loader: 'postcss-loader',
                 options: {
                     postcssOptions: {
-                        plugins: ['postcss-preset-env', 'cssnano']
+                        plugins: [
+                            [
+                                'postcss-preset-env',
+                                {
+                                    autoprefixer: {
+                                        flexbox: 'no-2009'
+                                    },
+                                    stage: 3
+                                }
+                            ],
+                            'cssnano'
+                        ]
                     }
                 }
             },
@@ -148,7 +160,7 @@ const config: webpack.Configuration = {
     },
     devServer: {
         historyApiFallback: true,
-        liveReload: false,
+        hot: 'only',
         client: {
             overlay: {
                 warnings: false,
@@ -184,7 +196,6 @@ const config: webpack.Configuration = {
                     files: resolve(appPath, './src/**/*.{ts,tsx,js,jsx}')
                 }
             }),
-        devMode && new HotModuleReplacementPlugin(),
         devMode && new ReactRefreshWebpackPlugin({ esModule: true, overlay: { sockProtocol: 'ws' } }),
         // only in prod
         devMode ||

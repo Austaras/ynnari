@@ -21,7 +21,7 @@ export function overriderWebpack() {
         } else {
             config = external
         }
-    } catch (e) {
+    } catch (e: any) {
         if (e.code !== 'MODULE_NOT_FOUND') {
             console.error(e)
         }

@@ -9,7 +9,10 @@ const config = overriderWebpack()
 const WebpackDevServer = require('webpack-dev-server/lib/Server')
 
 const compiler = webpack(config)
+const devServer = { ...config.devServer }
 
-const server = new WebpackDevServer(compiler, config.devServer)
+devServer.host ??= 'localhost'
 
-server.listen(config.devServer!.port, config.devServer!.host ?? 'localhost', () => {})
+const server = new WebpackDevServer(config.devServer, compiler)
+
+server.startCallback(() => {})
