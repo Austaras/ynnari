@@ -1,6 +1,6 @@
 {
     "name": "@wicke/ynnari",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "author": {
         "name": "Austaras",
         "email": "austaras@outlook.com"
@@ -24,8 +24,8 @@
         "ynnari-serve": "./dist/src/ynnari-serve.js"
     },
     "dependencies": {
-        "@pmmmwh/react-refresh-webpack-plugin": "^0.5.0-rc.6",
-        "@swc/core": "^1.2.84",
+        "@pmmmwh/react-refresh-webpack-plugin": "^0.5.1",
+        "@swc/core": "^1.2.88",
         "core-js": "^3.16.3",
         "css-loader": "^5.2.5",
         "cssnano": "^5.0.8",
