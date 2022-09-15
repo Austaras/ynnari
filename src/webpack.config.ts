@@ -190,12 +190,7 @@ const config: webpack.Configuration = {
             }
         }),
         // only in dev
-        devMode &&
-            new ForkTsCheckerWebpackPlugin({
-                eslint: {
-                    files: resolve(appPath, './src/**/*.{ts,tsx,js,jsx}')
-                }
-            }),
+        devMode && new ForkTsCheckerWebpackPlugin(),
         devMode && new ReactRefreshWebpackPlugin({ esModule: true, overlay: { sockProtocol: 'ws' } }),
         // only in prod
         devMode ||
