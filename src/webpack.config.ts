@@ -7,6 +7,7 @@ import { LicenseWebpackPlugin } from 'license-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { resolve } from 'path'
 import webpack, { DefinePlugin } from 'webpack'
+import 'webpack-dev-server'
 
 import { appPath } from './path'
 
@@ -167,7 +168,7 @@ const config: webpack.Configuration = {
                 errors: true
             }
         }
-    } as any,
+    },
     mode: devMode ? 'development' : 'production',
     module: { rules },
     resolve: {
