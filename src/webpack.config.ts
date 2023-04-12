@@ -6,6 +6,7 @@ import { parse } from 'jsonc-parser'
 import { LicenseWebpackPlugin } from 'license-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { resolve } from 'path'
+import TerserPlugin from 'terser-webpack-plugin'
 import webpack, { DefinePlugin } from 'webpack'
 import 'webpack-dev-server'
 
@@ -157,7 +158,8 @@ const config: webpack.Configuration = {
                     minChunks: 1
                 }
             }
-        }
+        },
+        minimizer: [new TerserPlugin({ minify: TerserPlugin.swcMinify })]
     },
     devServer: {
         historyApiFallback: true,
